@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		D32A50041F3C5E0400C3ADD0 /* ZPTCPIPStack.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50021F3C5E0400C3ADD0 /* ZPTCPIPStack.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D32A50BC1F3C603A00C3ADD0 /* def.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A500C1F3C603A00C3ADD0 /* def.c */; };
-		D32A50BD1F3C603A00C3ADD0 /* dns.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A500D1F3C603A00C3ADD0 /* dns.c */; };
 		D32A50BE1F3C603A00C3ADD0 /* inet_chksum.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A500E1F3C603A00C3ADD0 /* inet_chksum.c */; };
 		D32A50BF1F3C603A00C3ADD0 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A500F1F3C603A00C3ADD0 /* init.c */; };
 		D32A50C01F3C603A00C3ADD0 /* ip.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A50101F3C603A00C3ADD0 /* ip.c */; };
@@ -178,7 +177,6 @@
 		D32A50021F3C5E0400C3ADD0 /* ZPTCPIPStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZPTCPIPStack.h; sourceTree = "<group>"; };
 		D32A50031F3C5E0400C3ADD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D32A500C1F3C603A00C3ADD0 /* def.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = def.c; sourceTree = "<group>"; };
-		D32A500D1F3C603A00C3ADD0 /* dns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dns.c; sourceTree = "<group>"; };
 		D32A500E1F3C603A00C3ADD0 /* inet_chksum.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = inet_chksum.c; sourceTree = "<group>"; };
 		D32A500F1F3C603A00C3ADD0 /* init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = init.c; sourceTree = "<group>"; };
 		D32A50101F3C603A00C3ADD0 /* ip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ip.c; sourceTree = "<group>"; };
@@ -393,7 +391,6 @@
 			isa = PBXGroup;
 			children = (
 				D32A500C1F3C603A00C3ADD0 /* def.c */,
-				D32A500D1F3C603A00C3ADD0 /* dns.c */,
 				D32A500E1F3C603A00C3ADD0 /* inet_chksum.c */,
 				D32A500F1F3C603A00C3ADD0 /* init.c */,
 				D32A50101F3C603A00C3ADD0 /* ip.c */,
@@ -892,7 +889,6 @@
 				D32A50C91F3C603A00C3ADD0 /* dhcp6.c in Sources */,
 				D32A50DA1F3C603A00C3ADD0 /* tcp_in.c in Sources */,
 				D32A50CC1F3C603A00C3ADD0 /* inet6.c in Sources */,
-				D32A50BD1F3C603A00C3ADD0 /* dns.c in Sources */,
 				D32A50CA1F3C603A00C3ADD0 /* ethip6.c in Sources */,
 				D32A50D91F3C603A00C3ADD0 /* tcp.c in Sources */,
 				D32A50D21F3C603A00C3ADD0 /* mem.c in Sources */,
