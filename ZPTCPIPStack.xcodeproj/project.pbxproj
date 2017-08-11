@@ -124,6 +124,13 @@
 		D32A513B1F3C603A00C3ADD0 /* lowpan6.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50941F3C603A00C3ADD0 /* lowpan6.h */; };
 		D32A513C1F3C603A00C3ADD0 /* lowpan6_opts.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50951F3C603A00C3ADD0 /* lowpan6_opts.h */; };
 		D32A515E1F3C603A00C3ADD0 /* lwipopts.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50BB1F3C603A00C3ADD0 /* lwipopts.h */; };
+		D36528381F3D54C7002D1155 /* ZPPacketTunnel.h in Headers */ = {isa = PBXBuildFile; fileRef = D36528361F3D54C7002D1155 /* ZPPacketTunnel.h */; };
+		D36528391F3D54C7002D1155 /* ZPPacketTunnel.m in Sources */ = {isa = PBXBuildFile; fileRef = D36528371F3D54C7002D1155 /* ZPPacketTunnel.m */; };
+		D365283B1F3D551F002D1155 /* ZPPacketTunnelEx.h in Headers */ = {isa = PBXBuildFile; fileRef = D365283A1F3D551F002D1155 /* ZPPacketTunnelEx.h */; };
+		D365283E1F3D556A002D1155 /* ZPTCPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = D365283C1F3D556A002D1155 /* ZPTCPConnection.h */; };
+		D365283F1F3D556A002D1155 /* ZPTCPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = D365283D1F3D556A002D1155 /* ZPTCPConnection.m */; };
+		D36528411F3D5578002D1155 /* ZPTCPConnectionEx.h in Headers */ = {isa = PBXBuildFile; fileRef = D36528401F3D5578002D1155 /* ZPTCPConnectionEx.h */; };
+		D36528431F3D55E4002D1155 /* lwIP.h in Headers */ = {isa = PBXBuildFile; fileRef = D36528421F3D55E4002D1155 /* lwIP.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -246,6 +253,13 @@
 		D32A50941F3C603A00C3ADD0 /* lowpan6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lowpan6.h; sourceTree = "<group>"; };
 		D32A50951F3C603A00C3ADD0 /* lowpan6_opts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lowpan6_opts.h; sourceTree = "<group>"; };
 		D32A50BB1F3C603A00C3ADD0 /* lwipopts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwipopts.h; sourceTree = "<group>"; };
+		D36528361F3D54C7002D1155 /* ZPPacketTunnel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZPPacketTunnel.h; sourceTree = "<group>"; };
+		D36528371F3D54C7002D1155 /* ZPPacketTunnel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZPPacketTunnel.m; sourceTree = "<group>"; };
+		D365283A1F3D551F002D1155 /* ZPPacketTunnelEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZPPacketTunnelEx.h; sourceTree = "<group>"; };
+		D365283C1F3D556A002D1155 /* ZPTCPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZPTCPConnection.h; sourceTree = "<group>"; };
+		D365283D1F3D556A002D1155 /* ZPTCPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZPTCPConnection.m; sourceTree = "<group>"; };
+		D36528401F3D5578002D1155 /* ZPTCPConnectionEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZPTCPConnectionEx.h; sourceTree = "<group>"; };
+		D36528421F3D55E4002D1155 /* lwIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwIP.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,9 +292,10 @@
 		D32A50011F3C5E0400C3ADD0 /* ZPTCPIPStack */ = {
 			isa = PBXGroup;
 			children = (
-				D32A500A1F3C603A00C3ADD0 /* lwIP */,
 				D32A50021F3C5E0400C3ADD0 /* ZPTCPIPStack.h */,
 				D32A50031F3C5E0400C3ADD0 /* Info.plist */,
+				D32A500A1F3C603A00C3ADD0 /* lwIP */,
+				D36528351F3D529D002D1155 /* src */,
 			);
 			path = ZPTCPIPStack;
 			sourceTree = "<group>";
@@ -488,6 +503,20 @@
 			path = netif;
 			sourceTree = "<group>";
 		};
+		D36528351F3D529D002D1155 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				D36528361F3D54C7002D1155 /* ZPPacketTunnel.h */,
+				D365283A1F3D551F002D1155 /* ZPPacketTunnelEx.h */,
+				D36528371F3D54C7002D1155 /* ZPPacketTunnel.m */,
+				D365283C1F3D556A002D1155 /* ZPTCPConnection.h */,
+				D36528401F3D5578002D1155 /* ZPTCPConnectionEx.h */,
+				D365283D1F3D556A002D1155 /* ZPTCPConnection.m */,
+				D36528421F3D55E4002D1155 /* lwIP.h */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -505,6 +534,7 @@
 				D32A51391F3C603A00C3ADD0 /* etharp.h in Headers */,
 				D32A50FB1F3C603A00C3ADD0 /* dhcp.h in Headers */,
 				D32A51191F3C603A00C3ADD0 /* pbuf.h in Headers */,
+				D36528411F3D5578002D1155 /* ZPTCPConnectionEx.h in Headers */,
 				D32A51271F3C603A00C3ADD0 /* igmp.h in Headers */,
 				D32A51261F3C603A00C3ADD0 /* icmp6.h in Headers */,
 				D32A510A1F3C603A00C3ADD0 /* ip4_addr.h in Headers */,
@@ -514,6 +544,7 @@
 				D32A51161F3C603A00C3ADD0 /* netif.h in Headers */,
 				D32A51211F3C603A00C3ADD0 /* dhcp.h in Headers */,
 				D32A51131F3C603A00C3ADD0 /* nd6.h in Headers */,
+				D36528431F3D55E4002D1155 /* lwIP.h in Headers */,
 				D32A50ED1F3C603A00C3ADD0 /* snmp_mib2.h in Headers */,
 				D32A50FA1F3C603A00C3ADD0 /* def.h in Headers */,
 				D32A50E21F3C603A00C3ADD0 /* httpd_opts.h in Headers */,
@@ -543,6 +574,7 @@
 				D32A512D1F3C603A00C3ADD0 /* tcp.h in Headers */,
 				D32A51241F3C603A00C3ADD0 /* ethernet.h in Headers */,
 				D32A50FC1F3C603A00C3ADD0 /* dhcp6.h in Headers */,
+				D365283E1F3D556A002D1155 /* ZPTCPConnection.h in Headers */,
 				D32A50F41F3C603A00C3ADD0 /* sntp_opts.h in Headers */,
 				D32A50EC1F3C603A00C3ADD0 /* snmp_core.h in Headers */,
 				D32A510E1F3C603A00C3ADD0 /* ip6_frag.h in Headers */,
@@ -558,6 +590,7 @@
 				D32A512A1F3C603A00C3ADD0 /* ip6.h in Headers */,
 				D32A50E31F3C603A00C3ADD0 /* lwiperf.h in Headers */,
 				D32A51201F3C603A00C3ADD0 /* autoip.h in Headers */,
+				D365283B1F3D551F002D1155 /* ZPPacketTunnelEx.h in Headers */,
 				D32A50E41F3C603A00C3ADD0 /* mdns.h in Headers */,
 				D32A51371F3C603A00C3ADD0 /* timeouts.h in Headers */,
 				D32A512B1F3C603A00C3ADD0 /* mld6.h in Headers */,
@@ -575,6 +608,7 @@
 				D32A51021F3C603A00C3ADD0 /* icmp.h in Headers */,
 				D32A511C1F3C603A00C3ADD0 /* memp_std.h in Headers */,
 				D32A51121F3C603A00C3ADD0 /* mld6.h in Headers */,
+				D36528381F3D54C7002D1155 /* ZPPacketTunnel.h in Headers */,
 				D32A51331F3C603A00C3ADD0 /* stats.h in Headers */,
 				D32A51011F3C603A00C3ADD0 /* ethip6.h in Headers */,
 				D32A50EA1F3C603A00C3ADD0 /* netbiosns_opts.h in Headers */,
@@ -671,6 +705,7 @@
 				D32A50CB1F3C603A00C3ADD0 /* icmp6.c in Sources */,
 				D32A50D81F3C603A00C3ADD0 /* sys.c in Sources */,
 				D32A50C91F3C603A00C3ADD0 /* dhcp6.c in Sources */,
+				D365283F1F3D556A002D1155 /* ZPTCPConnection.m in Sources */,
 				D32A50DA1F3C603A00C3ADD0 /* tcp_in.c in Sources */,
 				D32A50CC1F3C603A00C3ADD0 /* inet6.c in Sources */,
 				D32A50CA1F3C603A00C3ADD0 /* ethip6.c in Sources */,
@@ -680,6 +715,7 @@
 				D32A50BE1F3C603A00C3ADD0 /* inet_chksum.c in Sources */,
 				D32A50C31F3C603A00C3ADD0 /* etharp.c in Sources */,
 				D32A50C01F3C603A00C3ADD0 /* ip.c in Sources */,
+				D36528391F3D54C7002D1155 /* ZPPacketTunnel.m in Sources */,
 				D32A50CD1F3C603A00C3ADD0 /* ip6.c in Sources */,
 				D32A50D01F3C603A00C3ADD0 /* mld6.c in Sources */,
 				D32A50C41F3C603A00C3ADD0 /* icmp.c in Sources */,
