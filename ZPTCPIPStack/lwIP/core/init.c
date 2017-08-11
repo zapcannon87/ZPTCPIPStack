@@ -54,7 +54,6 @@
 #include "lwip/ip6.h"
 #include "lwip/nd6.h"
 #include "lwip/mld6.h"
-#include "lwip/api.h"
 
 #include "netif/ppp/ppp_opts.h"
 #include "netif/ppp/ppp_impl.h"

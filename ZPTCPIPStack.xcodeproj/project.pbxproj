@@ -41,7 +41,6 @@
 		D32A50DC1F3C603A00C3ADD0 /* timeouts.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A502E1F3C603A00C3ADD0 /* timeouts.c */; };
 		D32A50DD1F3C603A00C3ADD0 /* udp.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A502F1F3C603A00C3ADD0 /* udp.c */; };
 		D32A50DE1F3C603A00C3ADD0 /* cc.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50321F3C603A00C3ADD0 /* cc.h */; };
-		D32A50DF1F3C603A00C3ADD0 /* api.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50341F3C603A00C3ADD0 /* api.h */; };
 		D32A50E01F3C603A00C3ADD0 /* fs.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50361F3C603A00C3ADD0 /* fs.h */; };
 		D32A50E11F3C603A00C3ADD0 /* httpd.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50371F3C603A00C3ADD0 /* httpd.h */; };
 		D32A50E21F3C603A00C3ADD0 /* httpd_opts.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50381F3C603A00C3ADD0 /* httpd_opts.h */; };
@@ -96,10 +95,8 @@
 		D32A51141F3C603A00C3ADD0 /* netbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506A1F3C603A00C3ADD0 /* netbuf.h */; };
 		D32A51151F3C603A00C3ADD0 /* netdb.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506B1F3C603A00C3ADD0 /* netdb.h */; };
 		D32A51161F3C603A00C3ADD0 /* netif.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506C1F3C603A00C3ADD0 /* netif.h */; };
-		D32A51171F3C603A00C3ADD0 /* netifapi.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506D1F3C603A00C3ADD0 /* netifapi.h */; };
 		D32A51181F3C603A00C3ADD0 /* opt.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506E1F3C603A00C3ADD0 /* opt.h */; };
 		D32A51191F3C603A00C3ADD0 /* pbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506F1F3C603A00C3ADD0 /* pbuf.h */; };
-		D32A511A1F3C603A00C3ADD0 /* api_msg.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50711F3C603A00C3ADD0 /* api_msg.h */; };
 		D32A511B1F3C603A00C3ADD0 /* memp_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50721F3C603A00C3ADD0 /* memp_priv.h */; };
 		D32A511C1F3C603A00C3ADD0 /* memp_std.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50731F3C603A00C3ADD0 /* memp_std.h */; };
 		D32A511D1F3C603A00C3ADD0 /* nd6_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50741F3C603A00C3ADD0 /* nd6_priv.h */; };
@@ -205,7 +202,6 @@
 		D32A502E1F3C603A00C3ADD0 /* timeouts.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = timeouts.c; sourceTree = "<group>"; };
 		D32A502F1F3C603A00C3ADD0 /* udp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = udp.c; sourceTree = "<group>"; };
 		D32A50321F3C603A00C3ADD0 /* cc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cc.h; sourceTree = "<group>"; };
-		D32A50341F3C603A00C3ADD0 /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
 		D32A50361F3C603A00C3ADD0 /* fs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fs.h; sourceTree = "<group>"; };
 		D32A50371F3C603A00C3ADD0 /* httpd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httpd.h; sourceTree = "<group>"; };
 		D32A50381F3C603A00C3ADD0 /* httpd_opts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httpd_opts.h; sourceTree = "<group>"; };
@@ -260,10 +256,8 @@
 		D32A506A1F3C603A00C3ADD0 /* netbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netbuf.h; sourceTree = "<group>"; };
 		D32A506B1F3C603A00C3ADD0 /* netdb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netdb.h; sourceTree = "<group>"; };
 		D32A506C1F3C603A00C3ADD0 /* netif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netif.h; sourceTree = "<group>"; };
-		D32A506D1F3C603A00C3ADD0 /* netifapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netifapi.h; sourceTree = "<group>"; };
 		D32A506E1F3C603A00C3ADD0 /* opt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opt.h; sourceTree = "<group>"; };
 		D32A506F1F3C603A00C3ADD0 /* pbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pbuf.h; sourceTree = "<group>"; };
-		D32A50711F3C603A00C3ADD0 /* api_msg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api_msg.h; sourceTree = "<group>"; };
 		D32A50721F3C603A00C3ADD0 /* memp_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memp_priv.h; sourceTree = "<group>"; };
 		D32A50731F3C603A00C3ADD0 /* memp_std.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memp_std.h; sourceTree = "<group>"; };
 		D32A50741F3C603A00C3ADD0 /* nd6_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nd6_priv.h; sourceTree = "<group>"; };
@@ -456,7 +450,6 @@
 		D32A50331F3C603A00C3ADD0 /* lwip */ = {
 			isa = PBXGroup;
 			children = (
-				D32A50341F3C603A00C3ADD0 /* api.h */,
 				D32A50351F3C603A00C3ADD0 /* apps */,
 				D32A504D1F3C603A00C3ADD0 /* arch.h */,
 				D32A504E1F3C603A00C3ADD0 /* autoip.h */,
@@ -489,7 +482,6 @@
 				D32A506A1F3C603A00C3ADD0 /* netbuf.h */,
 				D32A506B1F3C603A00C3ADD0 /* netdb.h */,
 				D32A506C1F3C603A00C3ADD0 /* netif.h */,
-				D32A506D1F3C603A00C3ADD0 /* netifapi.h */,
 				D32A506E1F3C603A00C3ADD0 /* opt.h */,
 				D32A506F1F3C603A00C3ADD0 /* pbuf.h */,
 				D32A50701F3C603A00C3ADD0 /* priv */,
@@ -540,7 +532,6 @@
 		D32A50701F3C603A00C3ADD0 /* priv */ = {
 			isa = PBXGroup;
 			children = (
-				D32A50711F3C603A00C3ADD0 /* api_msg.h */,
 				D32A50721F3C603A00C3ADD0 /* memp_priv.h */,
 				D32A50731F3C603A00C3ADD0 /* memp_std.h */,
 				D32A50741F3C603A00C3ADD0 /* nd6_priv.h */,
@@ -660,7 +651,6 @@
 				D32A51001F3C603A00C3ADD0 /* etharp.h in Headers */,
 				D32A50FE1F3C603A00C3ADD0 /* err.h in Headers */,
 				D32A50E81F3C603A00C3ADD0 /* mqtt_opts.h in Headers */,
-				D32A50DF1F3C603A00C3ADD0 /* api.h in Headers */,
 				D32A51491F3C603A00C3ADD0 /* mppe.h in Headers */,
 				D32A51481F3C603A00C3ADD0 /* magic.h in Headers */,
 				D32A513B1F3C603A00C3ADD0 /* lowpan6.h in Headers */,
@@ -745,7 +735,6 @@
 				D32A51501F3C603A00C3ADD0 /* ppp_impl.h in Headers */,
 				D32A51071F3C603A00C3ADD0 /* init.h in Headers */,
 				D32A51551F3C603A00C3ADD0 /* pppoe.h in Headers */,
-				D32A51171F3C603A00C3ADD0 /* netifapi.h in Headers */,
 				D32A50EF1F3C603A00C3ADD0 /* snmp_scalar.h in Headers */,
 				D32A51471F3C603A00C3ADD0 /* lcp.h in Headers */,
 				D32A50E51F3C603A00C3ADD0 /* mdns_opts.h in Headers */,
@@ -763,7 +752,6 @@
 				D32A51571F3C603A00C3ADD0 /* pppos.h in Headers */,
 				D32A51021F3C603A00C3ADD0 /* icmp.h in Headers */,
 				D32A513D1F3C603A00C3ADD0 /* ccp.h in Headers */,
-				D32A511A1F3C603A00C3ADD0 /* api_msg.h in Headers */,
 				D32A511C1F3C603A00C3ADD0 /* memp_std.h in Headers */,
 				D32A51141F3C603A00C3ADD0 /* netbuf.h in Headers */,
 				D32A51121F3C603A00C3ADD0 /* mld6.h in Headers */,
