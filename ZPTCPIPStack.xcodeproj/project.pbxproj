@@ -33,7 +33,6 @@
 		D32A50D31F3C603A00C3ADD0 /* memp.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A50251F3C603A00C3ADD0 /* memp.c */; };
 		D32A50D41F3C603A00C3ADD0 /* netif.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A50261F3C603A00C3ADD0 /* netif.c */; };
 		D32A50D51F3C603A00C3ADD0 /* pbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A50271F3C603A00C3ADD0 /* pbuf.c */; };
-		D32A50D61F3C603A00C3ADD0 /* raw.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A50281F3C603A00C3ADD0 /* raw.c */; };
 		D32A50D71F3C603A00C3ADD0 /* stats.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A50291F3C603A00C3ADD0 /* stats.c */; };
 		D32A50D81F3C603A00C3ADD0 /* sys.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A502A1F3C603A00C3ADD0 /* sys.c */; };
 		D32A50D91F3C603A00C3ADD0 /* tcp.c in Sources */ = {isa = PBXBuildFile; fileRef = D32A502B1F3C603A00C3ADD0 /* tcp.c */; };
@@ -120,7 +119,6 @@
 		D32A512C1F3C603A00C3ADD0 /* nd6.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50841F3C603A00C3ADD0 /* nd6.h */; };
 		D32A512D1F3C603A00C3ADD0 /* tcp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50851F3C603A00C3ADD0 /* tcp.h */; };
 		D32A512E1F3C603A00C3ADD0 /* udp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50861F3C603A00C3ADD0 /* udp.h */; };
-		D32A512F1F3C603A00C3ADD0 /* raw.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50871F3C603A00C3ADD0 /* raw.h */; };
 		D32A51301F3C603A00C3ADD0 /* sio.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50881F3C603A00C3ADD0 /* sio.h */; };
 		D32A51311F3C603A00C3ADD0 /* snmp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50891F3C603A00C3ADD0 /* snmp.h */; };
 		D32A51321F3C603A00C3ADD0 /* sockets.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508A1F3C603A00C3ADD0 /* sockets.h */; };
@@ -199,7 +197,6 @@
 		D32A50251F3C603A00C3ADD0 /* memp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = memp.c; sourceTree = "<group>"; };
 		D32A50261F3C603A00C3ADD0 /* netif.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = netif.c; sourceTree = "<group>"; };
 		D32A50271F3C603A00C3ADD0 /* pbuf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pbuf.c; sourceTree = "<group>"; };
-		D32A50281F3C603A00C3ADD0 /* raw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = raw.c; sourceTree = "<group>"; };
 		D32A50291F3C603A00C3ADD0 /* stats.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stats.c; sourceTree = "<group>"; };
 		D32A502A1F3C603A00C3ADD0 /* sys.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sys.c; sourceTree = "<group>"; };
 		D32A502B1F3C603A00C3ADD0 /* tcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tcp.c; sourceTree = "<group>"; };
@@ -286,7 +283,6 @@
 		D32A50841F3C603A00C3ADD0 /* nd6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nd6.h; sourceTree = "<group>"; };
 		D32A50851F3C603A00C3ADD0 /* tcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tcp.h; sourceTree = "<group>"; };
 		D32A50861F3C603A00C3ADD0 /* udp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = udp.h; sourceTree = "<group>"; };
-		D32A50871F3C603A00C3ADD0 /* raw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = raw.h; sourceTree = "<group>"; };
 		D32A50881F3C603A00C3ADD0 /* sio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sio.h; sourceTree = "<group>"; };
 		D32A50891F3C603A00C3ADD0 /* snmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = snmp.h; sourceTree = "<group>"; };
 		D32A508A1F3C603A00C3ADD0 /* sockets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sockets.h; sourceTree = "<group>"; };
@@ -396,7 +392,6 @@
 				D32A50251F3C603A00C3ADD0 /* memp.c */,
 				D32A50261F3C603A00C3ADD0 /* netif.c */,
 				D32A50271F3C603A00C3ADD0 /* pbuf.c */,
-				D32A50281F3C603A00C3ADD0 /* raw.c */,
 				D32A50291F3C603A00C3ADD0 /* stats.c */,
 				D32A502A1F3C603A00C3ADD0 /* sys.c */,
 				D32A502B1F3C603A00C3ADD0 /* tcp.c */,
@@ -499,7 +494,6 @@
 				D32A506F1F3C603A00C3ADD0 /* pbuf.h */,
 				D32A50701F3C603A00C3ADD0 /* priv */,
 				D32A50771F3C603A00C3ADD0 /* prot */,
-				D32A50871F3C603A00C3ADD0 /* raw.h */,
 				D32A50881F3C603A00C3ADD0 /* sio.h */,
 				D32A50891F3C603A00C3ADD0 /* snmp.h */,
 				D32A508A1F3C603A00C3ADD0 /* sockets.h */,
@@ -738,7 +732,6 @@
 				D32A50F01F3C603A00C3ADD0 /* snmp_table.h in Headers */,
 				D32A51081F3C603A00C3ADD0 /* ip.h in Headers */,
 				D32A512A1F3C603A00C3ADD0 /* ip6.h in Headers */,
-				D32A512F1F3C603A00C3ADD0 /* raw.h in Headers */,
 				D32A50E31F3C603A00C3ADD0 /* lwiperf.h in Headers */,
 				D32A51201F3C603A00C3ADD0 /* autoip.h in Headers */,
 				D32A50E41F3C603A00C3ADD0 /* mdns.h in Headers */,
@@ -859,7 +852,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D32A50D61F3C603A00C3ADD0 /* raw.c in Sources */,
 				D32A50D51F3C603A00C3ADD0 /* pbuf.c in Sources */,
 				D32A50D11F3C603A00C3ADD0 /* nd6.c in Sources */,
 				D32A50C61F3C603A00C3ADD0 /* ip4.c in Sources */,

@@ -50,7 +50,6 @@
 #include "lwip/netif.h"
 #include "lwip/icmp.h"
 #include "lwip/igmp.h"
-#include "lwip/raw.h"
 #include "lwip/udp.h"
 #include "lwip/priv/tcp_priv.h"
 #include "lwip/autoip.h"

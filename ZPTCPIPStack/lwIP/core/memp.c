@@ -53,7 +53,6 @@
 
 /* Make sure we include everything we need for size calculation required by memp_std.h */
 #include "lwip/pbuf.h"
-#include "lwip/raw.h"
 #include "lwip/udp.h"
 #include "lwip/tcp.h"
 #include "lwip/priv/tcp_priv.h"

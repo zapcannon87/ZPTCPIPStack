@@ -46,7 +46,6 @@
 #include "lwip/netif.h"
 #include "lwip/sockets.h"
 #include "lwip/ip.h"
-#include "lwip/raw.h"
 #include "lwip/udp.h"
 #include "lwip/priv/tcp_priv.h"
 #include "lwip/igmp.h"

@@ -51,7 +51,6 @@
 #include "lwip/ip6_addr.h"
 #include "lwip/ip6_frag.h"
 #include "lwip/icmp6.h"
-#include "lwip/raw.h"
 #include "lwip/udp.h"
 #include "lwip/priv/tcp_priv.h"
 #include "lwip/dhcp6.h"
