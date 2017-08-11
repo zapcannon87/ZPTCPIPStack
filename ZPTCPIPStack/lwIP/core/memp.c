@@ -57,7 +57,6 @@
 #include "lwip/tcp.h"
 #include "lwip/priv/tcp_priv.h"
 #include "lwip/ip4_frag.h"
-#include "lwip/sockets.h"
 #include "lwip/etharp.h"
 #include "lwip/igmp.h"
 #include "lwip/timeouts.h"

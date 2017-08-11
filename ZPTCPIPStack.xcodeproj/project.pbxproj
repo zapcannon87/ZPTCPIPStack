@@ -113,9 +113,7 @@
 		D32A512C1F3C603A00C3ADD0 /* nd6.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50841F3C603A00C3ADD0 /* nd6.h */; };
 		D32A512D1F3C603A00C3ADD0 /* tcp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50851F3C603A00C3ADD0 /* tcp.h */; };
 		D32A512E1F3C603A00C3ADD0 /* udp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50861F3C603A00C3ADD0 /* udp.h */; };
-		D32A51301F3C603A00C3ADD0 /* sio.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50881F3C603A00C3ADD0 /* sio.h */; };
 		D32A51311F3C603A00C3ADD0 /* snmp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50891F3C603A00C3ADD0 /* snmp.h */; };
-		D32A51321F3C603A00C3ADD0 /* sockets.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508A1F3C603A00C3ADD0 /* sockets.h */; };
 		D32A51331F3C603A00C3ADD0 /* stats.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508B1F3C603A00C3ADD0 /* stats.h */; };
 		D32A51341F3C603A00C3ADD0 /* sys.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508C1F3C603A00C3ADD0 /* sys.h */; };
 		D32A51351F3C603A00C3ADD0 /* tcp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508D1F3C603A00C3ADD0 /* tcp.h */; };
@@ -270,9 +268,7 @@
 		D32A50841F3C603A00C3ADD0 /* nd6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nd6.h; sourceTree = "<group>"; };
 		D32A50851F3C603A00C3ADD0 /* tcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tcp.h; sourceTree = "<group>"; };
 		D32A50861F3C603A00C3ADD0 /* udp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = udp.h; sourceTree = "<group>"; };
-		D32A50881F3C603A00C3ADD0 /* sio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sio.h; sourceTree = "<group>"; };
 		D32A50891F3C603A00C3ADD0 /* snmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = snmp.h; sourceTree = "<group>"; };
-		D32A508A1F3C603A00C3ADD0 /* sockets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sockets.h; sourceTree = "<group>"; };
 		D32A508B1F3C603A00C3ADD0 /* stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stats.h; sourceTree = "<group>"; };
 		D32A508C1F3C603A00C3ADD0 /* sys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sys.h; sourceTree = "<group>"; };
 		D32A508D1F3C603A00C3ADD0 /* tcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tcp.h; sourceTree = "<group>"; };
@@ -476,9 +472,7 @@
 				D32A506F1F3C603A00C3ADD0 /* pbuf.h */,
 				D32A50701F3C603A00C3ADD0 /* priv */,
 				D32A50771F3C603A00C3ADD0 /* prot */,
-				D32A50881F3C603A00C3ADD0 /* sio.h */,
 				D32A50891F3C603A00C3ADD0 /* snmp.h */,
-				D32A508A1F3C603A00C3ADD0 /* sockets.h */,
 				D32A508B1F3C603A00C3ADD0 /* stats.h */,
 				D32A508C1F3C603A00C3ADD0 /* sys.h */,
 				D32A508D1F3C603A00C3ADD0 /* tcp.h */,
@@ -671,7 +665,6 @@
 				D32A51351F3C603A00C3ADD0 /* tcp.h in Headers */,
 				D32A50EE1F3C603A00C3ADD0 /* snmp_opts.h in Headers */,
 				D32A50F61F3C603A00C3ADD0 /* tftp_server.h in Headers */,
-				D32A51301F3C603A00C3ADD0 /* sio.h in Headers */,
 				D32A515C1F3C603A00C3ADD0 /* netdb.h in Headers */,
 				D32A511E1F3C603A00C3ADD0 /* tcp_priv.h in Headers */,
 				D32A50F11F3C603A00C3ADD0 /* snmp_threadsync.h in Headers */,
@@ -726,7 +719,6 @@
 				D32A51471F3C603A00C3ADD0 /* lcp.h in Headers */,
 				D32A50E51F3C603A00C3ADD0 /* mdns_opts.h in Headers */,
 				D32A51441F3C603A00C3ADD0 /* fsm.h in Headers */,
-				D32A51321F3C603A00C3ADD0 /* sockets.h in Headers */,
 				D32A51561F3C603A00C3ADD0 /* pppol2tp.h in Headers */,
 				D32A51381F3C603A00C3ADD0 /* udp.h in Headers */,
 				D32A513C1F3C603A00C3ADD0 /* lowpan6_opts.h in Headers */,
