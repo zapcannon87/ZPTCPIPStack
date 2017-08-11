@@ -123,9 +123,6 @@
 		D32A513A1F3C603A00C3ADD0 /* ethernet.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50931F3C603A00C3ADD0 /* ethernet.h */; };
 		D32A513B1F3C603A00C3ADD0 /* lowpan6.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50941F3C603A00C3ADD0 /* lowpan6.h */; };
 		D32A513C1F3C603A00C3ADD0 /* lowpan6_opts.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50951F3C603A00C3ADD0 /* lowpan6_opts.h */; };
-		D32A515B1F3C603A00C3ADD0 /* errno.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50B71F3C603A00C3ADD0 /* errno.h */; };
-		D32A515C1F3C603A00C3ADD0 /* netdb.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50B81F3C603A00C3ADD0 /* netdb.h */; };
-		D32A515D1F3C603A00C3ADD0 /* socket.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50BA1F3C603A00C3ADD0 /* socket.h */; };
 		D32A515E1F3C603A00C3ADD0 /* lwipopts.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50BB1F3C603A00C3ADD0 /* lwipopts.h */; };
 /* End PBXBuildFile section */
 
@@ -248,9 +245,6 @@
 		D32A50931F3C603A00C3ADD0 /* ethernet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ethernet.h; sourceTree = "<group>"; };
 		D32A50941F3C603A00C3ADD0 /* lowpan6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lowpan6.h; sourceTree = "<group>"; };
 		D32A50951F3C603A00C3ADD0 /* lowpan6_opts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lowpan6_opts.h; sourceTree = "<group>"; };
-		D32A50B71F3C603A00C3ADD0 /* errno.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = errno.h; sourceTree = "<group>"; };
-		D32A50B81F3C603A00C3ADD0 /* netdb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netdb.h; sourceTree = "<group>"; };
-		D32A50BA1F3C603A00C3ADD0 /* socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket.h; sourceTree = "<group>"; };
 		D32A50BB1F3C603A00C3ADD0 /* lwipopts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwipopts.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -362,7 +356,6 @@
 				D32A50311F3C603A00C3ADD0 /* arch */,
 				D32A50331F3C603A00C3ADD0 /* lwip */,
 				D32A50911F3C603A00C3ADD0 /* netif */,
-				D32A50B61F3C603A00C3ADD0 /* posix */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -495,24 +488,6 @@
 			path = netif;
 			sourceTree = "<group>";
 		};
-		D32A50B61F3C603A00C3ADD0 /* posix */ = {
-			isa = PBXGroup;
-			children = (
-				D32A50B71F3C603A00C3ADD0 /* errno.h */,
-				D32A50B81F3C603A00C3ADD0 /* netdb.h */,
-				D32A50B91F3C603A00C3ADD0 /* sys */,
-			);
-			path = posix;
-			sourceTree = "<group>";
-		};
-		D32A50B91F3C603A00C3ADD0 /* sys */ = {
-			isa = PBXGroup;
-			children = (
-				D32A50BA1F3C603A00C3ADD0 /* socket.h */,
-			);
-			path = sys;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -551,7 +526,6 @@
 				D32A51351F3C603A00C3ADD0 /* tcp.h in Headers */,
 				D32A50EE1F3C603A00C3ADD0 /* snmp_opts.h in Headers */,
 				D32A50F61F3C603A00C3ADD0 /* tftp_server.h in Headers */,
-				D32A515C1F3C603A00C3ADD0 /* netdb.h in Headers */,
 				D32A511E1F3C603A00C3ADD0 /* tcp_priv.h in Headers */,
 				D32A50F11F3C603A00C3ADD0 /* snmp_threadsync.h in Headers */,
 				D32A512E1F3C603A00C3ADD0 /* udp.h in Headers */,
@@ -605,8 +579,6 @@
 				D32A51011F3C603A00C3ADD0 /* ethip6.h in Headers */,
 				D32A50EA1F3C603A00C3ADD0 /* netbiosns_opts.h in Headers */,
 				D32A50E11F3C603A00C3ADD0 /* httpd.h in Headers */,
-				D32A515B1F3C603A00C3ADD0 /* errno.h in Headers */,
-				D32A515D1F3C603A00C3ADD0 /* socket.h in Headers */,
 				D32A50FF1F3C603A00C3ADD0 /* errno.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
