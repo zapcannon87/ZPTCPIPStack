@@ -99,7 +99,6 @@
 		D32A511C1F3C603A00C3ADD0 /* memp_std.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50731F3C603A00C3ADD0 /* memp_std.h */; };
 		D32A511D1F3C603A00C3ADD0 /* nd6_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50741F3C603A00C3ADD0 /* nd6_priv.h */; };
 		D32A511E1F3C603A00C3ADD0 /* tcp_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50751F3C603A00C3ADD0 /* tcp_priv.h */; };
-		D32A511F1F3C603A00C3ADD0 /* tcpip_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50761F3C603A00C3ADD0 /* tcpip_priv.h */; };
 		D32A51201F3C603A00C3ADD0 /* autoip.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50781F3C603A00C3ADD0 /* autoip.h */; };
 		D32A51211F3C603A00C3ADD0 /* dhcp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50791F3C603A00C3ADD0 /* dhcp.h */; };
 		D32A51231F3C603A00C3ADD0 /* etharp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A507B1F3C603A00C3ADD0 /* etharp.h */; };
@@ -120,7 +119,6 @@
 		D32A51331F3C603A00C3ADD0 /* stats.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508B1F3C603A00C3ADD0 /* stats.h */; };
 		D32A51341F3C603A00C3ADD0 /* sys.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508C1F3C603A00C3ADD0 /* sys.h */; };
 		D32A51351F3C603A00C3ADD0 /* tcp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508D1F3C603A00C3ADD0 /* tcp.h */; };
-		D32A51361F3C603A00C3ADD0 /* tcpip.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508E1F3C603A00C3ADD0 /* tcpip.h */; };
 		D32A51371F3C603A00C3ADD0 /* timeouts.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A508F1F3C603A00C3ADD0 /* timeouts.h */; };
 		D32A51381F3C603A00C3ADD0 /* udp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50901F3C603A00C3ADD0 /* udp.h */; };
 		D32A51391F3C603A00C3ADD0 /* etharp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50921F3C603A00C3ADD0 /* etharp.h */; };
@@ -258,7 +256,6 @@
 		D32A50731F3C603A00C3ADD0 /* memp_std.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memp_std.h; sourceTree = "<group>"; };
 		D32A50741F3C603A00C3ADD0 /* nd6_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nd6_priv.h; sourceTree = "<group>"; };
 		D32A50751F3C603A00C3ADD0 /* tcp_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tcp_priv.h; sourceTree = "<group>"; };
-		D32A50761F3C603A00C3ADD0 /* tcpip_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tcpip_priv.h; sourceTree = "<group>"; };
 		D32A50781F3C603A00C3ADD0 /* autoip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoip.h; sourceTree = "<group>"; };
 		D32A50791F3C603A00C3ADD0 /* dhcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dhcp.h; sourceTree = "<group>"; };
 		D32A507B1F3C603A00C3ADD0 /* etharp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = etharp.h; sourceTree = "<group>"; };
@@ -279,7 +276,6 @@
 		D32A508B1F3C603A00C3ADD0 /* stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stats.h; sourceTree = "<group>"; };
 		D32A508C1F3C603A00C3ADD0 /* sys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sys.h; sourceTree = "<group>"; };
 		D32A508D1F3C603A00C3ADD0 /* tcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tcp.h; sourceTree = "<group>"; };
-		D32A508E1F3C603A00C3ADD0 /* tcpip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tcpip.h; sourceTree = "<group>"; };
 		D32A508F1F3C603A00C3ADD0 /* timeouts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timeouts.h; sourceTree = "<group>"; };
 		D32A50901F3C603A00C3ADD0 /* udp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = udp.h; sourceTree = "<group>"; };
 		D32A50921F3C603A00C3ADD0 /* etharp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = etharp.h; sourceTree = "<group>"; };
@@ -486,7 +482,6 @@
 				D32A508B1F3C603A00C3ADD0 /* stats.h */,
 				D32A508C1F3C603A00C3ADD0 /* sys.h */,
 				D32A508D1F3C603A00C3ADD0 /* tcp.h */,
-				D32A508E1F3C603A00C3ADD0 /* tcpip.h */,
 				D32A508F1F3C603A00C3ADD0 /* timeouts.h */,
 				D32A50901F3C603A00C3ADD0 /* udp.h */,
 			);
@@ -530,7 +525,6 @@
 				D32A50731F3C603A00C3ADD0 /* memp_std.h */,
 				D32A50741F3C603A00C3ADD0 /* nd6_priv.h */,
 				D32A50751F3C603A00C3ADD0 /* tcp_priv.h */,
-				D32A50761F3C603A00C3ADD0 /* tcpip_priv.h */,
 			);
 			path = priv;
 			sourceTree = "<group>";
@@ -733,7 +727,6 @@
 				D32A50E51F3C603A00C3ADD0 /* mdns_opts.h in Headers */,
 				D32A51441F3C603A00C3ADD0 /* fsm.h in Headers */,
 				D32A51321F3C603A00C3ADD0 /* sockets.h in Headers */,
-				D32A511F1F3C603A00C3ADD0 /* tcpip_priv.h in Headers */,
 				D32A51561F3C603A00C3ADD0 /* pppol2tp.h in Headers */,
 				D32A51381F3C603A00C3ADD0 /* udp.h in Headers */,
 				D32A513C1F3C603A00C3ADD0 /* lowpan6_opts.h in Headers */,
@@ -756,7 +749,6 @@
 				D32A514E1F3C603A00C3ADD0 /* sha1.h in Headers */,
 				D32A50E11F3C603A00C3ADD0 /* httpd.h in Headers */,
 				D32A515B1F3C603A00C3ADD0 /* errno.h in Headers */,
-				D32A51361F3C603A00C3ADD0 /* tcpip.h in Headers */,
 				D32A515D1F3C603A00C3ADD0 /* socket.h in Headers */,
 				D32A50FF1F3C603A00C3ADD0 /* errno.h in Headers */,
 				D32A51541F3C603A00C3ADD0 /* pppdebug.h in Headers */,
