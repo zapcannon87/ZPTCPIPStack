@@ -60,7 +60,6 @@
 #include "lwip/mld6.h"
 #include "lwip/ip.h"
 #include "lwip/stats.h"
-#include "lwip/dns.h"
 
 #include <string.h>
 

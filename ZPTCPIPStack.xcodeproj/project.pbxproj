@@ -72,7 +72,6 @@
 		D32A50FA1F3C603A00C3ADD0 /* def.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50501F3C603A00C3ADD0 /* def.h */; };
 		D32A50FB1F3C603A00C3ADD0 /* dhcp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50511F3C603A00C3ADD0 /* dhcp.h */; };
 		D32A50FC1F3C603A00C3ADD0 /* dhcp6.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50521F3C603A00C3ADD0 /* dhcp6.h */; };
-		D32A50FD1F3C603A00C3ADD0 /* dns.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50531F3C603A00C3ADD0 /* dns.h */; };
 		D32A50FE1F3C603A00C3ADD0 /* err.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50541F3C603A00C3ADD0 /* err.h */; };
 		D32A50FF1F3C603A00C3ADD0 /* errno.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50551F3C603A00C3ADD0 /* errno.h */; };
 		D32A51001F3C603A00C3ADD0 /* etharp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50561F3C603A00C3ADD0 /* etharp.h */; };
@@ -109,7 +108,6 @@
 		D32A511F1F3C603A00C3ADD0 /* tcpip_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50761F3C603A00C3ADD0 /* tcpip_priv.h */; };
 		D32A51201F3C603A00C3ADD0 /* autoip.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50781F3C603A00C3ADD0 /* autoip.h */; };
 		D32A51211F3C603A00C3ADD0 /* dhcp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50791F3C603A00C3ADD0 /* dhcp.h */; };
-		D32A51221F3C603A00C3ADD0 /* dns.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A507A1F3C603A00C3ADD0 /* dns.h */; };
 		D32A51231F3C603A00C3ADD0 /* etharp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A507B1F3C603A00C3ADD0 /* etharp.h */; };
 		D32A51241F3C603A00C3ADD0 /* ethernet.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A507C1F3C603A00C3ADD0 /* ethernet.h */; };
 		D32A51251F3C603A00C3ADD0 /* icmp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A507D1F3C603A00C3ADD0 /* icmp.h */; };
@@ -240,7 +238,6 @@
 		D32A50501F3C603A00C3ADD0 /* def.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = def.h; sourceTree = "<group>"; };
 		D32A50511F3C603A00C3ADD0 /* dhcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dhcp.h; sourceTree = "<group>"; };
 		D32A50521F3C603A00C3ADD0 /* dhcp6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dhcp6.h; sourceTree = "<group>"; };
-		D32A50531F3C603A00C3ADD0 /* dns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dns.h; sourceTree = "<group>"; };
 		D32A50541F3C603A00C3ADD0 /* err.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = err.h; sourceTree = "<group>"; };
 		D32A50551F3C603A00C3ADD0 /* errno.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = errno.h; sourceTree = "<group>"; };
 		D32A50561F3C603A00C3ADD0 /* etharp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = etharp.h; sourceTree = "<group>"; };
@@ -277,7 +274,6 @@
 		D32A50761F3C603A00C3ADD0 /* tcpip_priv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tcpip_priv.h; sourceTree = "<group>"; };
 		D32A50781F3C603A00C3ADD0 /* autoip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoip.h; sourceTree = "<group>"; };
 		D32A50791F3C603A00C3ADD0 /* dhcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dhcp.h; sourceTree = "<group>"; };
-		D32A507A1F3C603A00C3ADD0 /* dns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dns.h; sourceTree = "<group>"; };
 		D32A507B1F3C603A00C3ADD0 /* etharp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = etharp.h; sourceTree = "<group>"; };
 		D32A507C1F3C603A00C3ADD0 /* ethernet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ethernet.h; sourceTree = "<group>"; };
 		D32A507D1F3C603A00C3ADD0 /* icmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = icmp.h; sourceTree = "<group>"; };
@@ -473,7 +469,6 @@
 				D32A50501F3C603A00C3ADD0 /* def.h */,
 				D32A50511F3C603A00C3ADD0 /* dhcp.h */,
 				D32A50521F3C603A00C3ADD0 /* dhcp6.h */,
-				D32A50531F3C603A00C3ADD0 /* dns.h */,
 				D32A50541F3C603A00C3ADD0 /* err.h */,
 				D32A50551F3C603A00C3ADD0 /* errno.h */,
 				D32A50561F3C603A00C3ADD0 /* etharp.h */,
@@ -566,7 +561,6 @@
 			children = (
 				D32A50781F3C603A00C3ADD0 /* autoip.h */,
 				D32A50791F3C603A00C3ADD0 /* dhcp.h */,
-				D32A507A1F3C603A00C3ADD0 /* dns.h */,
 				D32A507B1F3C603A00C3ADD0 /* etharp.h */,
 				D32A507C1F3C603A00C3ADD0 /* ethernet.h */,
 				D32A507D1F3C603A00C3ADD0 /* icmp.h */,
@@ -666,7 +660,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D32A514A1F3C603A00C3ADD0 /* arc4.h in Headers */,
-				D32A50FD1F3C603A00C3ADD0 /* dns.h in Headers */,
 				D32A50F31F3C603A00C3ADD0 /* sntp.h in Headers */,
 				D32A515A1F3C603A00C3ADD0 /* slipif.h in Headers */,
 				D32A514B1F3C603A00C3ADD0 /* des.h in Headers */,
@@ -791,7 +784,6 @@
 				D32A50E11F3C603A00C3ADD0 /* httpd.h in Headers */,
 				D32A515B1F3C603A00C3ADD0 /* errno.h in Headers */,
 				D32A51361F3C603A00C3ADD0 /* tcpip.h in Headers */,
-				D32A51221F3C603A00C3ADD0 /* dns.h in Headers */,
 				D32A515D1F3C603A00C3ADD0 /* socket.h in Headers */,
 				D32A50FF1F3C603A00C3ADD0 /* errno.h in Headers */,
 				D32A51541F3C603A00C3ADD0 /* pppdebug.h in Headers */,

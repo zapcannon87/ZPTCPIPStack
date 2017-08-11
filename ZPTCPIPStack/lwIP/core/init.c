@@ -50,7 +50,6 @@
 #include "lwip/udp.h"
 #include "lwip/priv/tcp_priv.h"
 #include "lwip/igmp.h"
-#include "lwip/dns.h"
 #include "lwip/timeouts.h"
 #include "lwip/etharp.h"
 #include "lwip/ip6.h"
