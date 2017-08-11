@@ -64,7 +64,6 @@
 #include "lwip/timeouts.h"
 /* needed by default MEMP_NUM_SYS_TIMEOUT */
 #include "netif/ppp/ppp_opts.h"
-#include "lwip/netdb.h"
 #include "lwip/priv/nd6_priv.h"
 #include "lwip/ip6_frag.h"
 #include "lwip/mld6.h"
