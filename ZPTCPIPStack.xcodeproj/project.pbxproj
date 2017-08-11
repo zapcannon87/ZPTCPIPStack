@@ -92,7 +92,6 @@
 		D32A51111F3C603A00C3ADD0 /* memp.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50671F3C603A00C3ADD0 /* memp.h */; };
 		D32A51121F3C603A00C3ADD0 /* mld6.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50681F3C603A00C3ADD0 /* mld6.h */; };
 		D32A51131F3C603A00C3ADD0 /* nd6.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50691F3C603A00C3ADD0 /* nd6.h */; };
-		D32A51141F3C603A00C3ADD0 /* netbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506A1F3C603A00C3ADD0 /* netbuf.h */; };
 		D32A51151F3C603A00C3ADD0 /* netdb.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506B1F3C603A00C3ADD0 /* netdb.h */; };
 		D32A51161F3C603A00C3ADD0 /* netif.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506C1F3C603A00C3ADD0 /* netif.h */; };
 		D32A51181F3C603A00C3ADD0 /* opt.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A506E1F3C603A00C3ADD0 /* opt.h */; };
@@ -253,7 +252,6 @@
 		D32A50671F3C603A00C3ADD0 /* memp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memp.h; sourceTree = "<group>"; };
 		D32A50681F3C603A00C3ADD0 /* mld6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mld6.h; sourceTree = "<group>"; };
 		D32A50691F3C603A00C3ADD0 /* nd6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nd6.h; sourceTree = "<group>"; };
-		D32A506A1F3C603A00C3ADD0 /* netbuf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netbuf.h; sourceTree = "<group>"; };
 		D32A506B1F3C603A00C3ADD0 /* netdb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netdb.h; sourceTree = "<group>"; };
 		D32A506C1F3C603A00C3ADD0 /* netif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netif.h; sourceTree = "<group>"; };
 		D32A506E1F3C603A00C3ADD0 /* opt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opt.h; sourceTree = "<group>"; };
@@ -479,7 +477,6 @@
 				D32A50671F3C603A00C3ADD0 /* memp.h */,
 				D32A50681F3C603A00C3ADD0 /* mld6.h */,
 				D32A50691F3C603A00C3ADD0 /* nd6.h */,
-				D32A506A1F3C603A00C3ADD0 /* netbuf.h */,
 				D32A506B1F3C603A00C3ADD0 /* netdb.h */,
 				D32A506C1F3C603A00C3ADD0 /* netif.h */,
 				D32A506E1F3C603A00C3ADD0 /* opt.h */,
@@ -753,7 +750,6 @@
 				D32A51021F3C603A00C3ADD0 /* icmp.h in Headers */,
 				D32A513D1F3C603A00C3ADD0 /* ccp.h in Headers */,
 				D32A511C1F3C603A00C3ADD0 /* memp_std.h in Headers */,
-				D32A51141F3C603A00C3ADD0 /* netbuf.h in Headers */,
 				D32A51121F3C603A00C3ADD0 /* mld6.h in Headers */,
 				D32A51591F3C603A00C3ADD0 /* vj.h in Headers */,
 				D32A51331F3C603A00C3ADD0 /* stats.h in Headers */,

@@ -57,7 +57,6 @@
 #include "lwip/tcp.h"
 #include "lwip/priv/tcp_priv.h"
 #include "lwip/ip4_frag.h"
-#include "lwip/netbuf.h"
 #include "lwip/priv/tcpip_priv.h"
 #include "lwip/sockets.h"
 #include "lwip/etharp.h"
