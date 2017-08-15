@@ -81,6 +81,11 @@
             /* inherit socket options */
             npcb->so_options = SOF_KEEPALIVE;
             
+            /* lwIP's `NETCONN_TCP_POLL_INTERVAL` is set to 2,
+             so we stay the same, let pcb poll once per second */
+            npcb->polltmr = 0;
+            npcb->pollinterval = 2;
+            
             /* Parse any options in the SYN. */
 //            tcp_parseopt(npcb);
             npcb->snd_wnd = _tcpInfo.tcphdr->wnd;
@@ -95,7 +100,7 @@
             /* Send a SYN|ACK together with the MSS option. */
             err_t rc = tcp_enqueue_flags(npcb, TCP_SYN | TCP_ACK);
             if (rc != ERR_OK) {
-                tcp_abandon(npcb, 0);
+                tcp_abandon(npcb, 0, &_tcpInfo);
                 return NULL;
             }
             tcp_output(npcb);

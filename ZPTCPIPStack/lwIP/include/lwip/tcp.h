@@ -55,6 +55,7 @@ extern "C" {
 #endif
 
 struct tcp_pcb;
+struct tcp_info; /* ==ZP== */
 
 /** Function prototype for tcp accept callback functions. Called when a new
  * connection can be accepted on a listening pcb.
@@ -400,8 +401,9 @@ struct tcp_pcb * tcp_listen_with_backlog(struct tcp_pcb *pcb, u8_t backlog);
 #define          tcp_listen(pcb) tcp_listen_with_backlog(pcb, TCP_DEFAULT_LISTEN_BACKLOG)
 
 void             tcp_abort (struct tcp_pcb *pcb);
-err_t            tcp_close   (struct tcp_pcb *pcb);
-err_t            tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx);
+err_t            tcp_close   (struct tcp_pcb *pcb, struct tcp_info *tcpInfo); /* ==ZP== */
+err_t            tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx, struct tcp_info *tcpInfo); /* ==ZP== */
+
 
 /* Flags for "apiflags" parameter in tcp_write */
 #define TCP_WRITE_FLAG_COPY 0x01
