@@ -22,4 +22,12 @@
 
 @property (nonatomic, assign) struct netif netif;
 
+- (void)tcp_connection_established:(ZPTCPConnection *)conn;
+
+- (void)removeConnectionForKey:(NSString *)key;
+
+- (ZPTCPConnection *)connectionForKey:(NSString *)key;
+
+- (void)setConnection:(ZPTCPConnection *)conn forKey:(NSString *)key;
+
 @end

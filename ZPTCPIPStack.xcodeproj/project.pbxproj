@@ -506,13 +506,13 @@
 		D36528351F3D529D002D1155 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				D36528421F3D55E4002D1155 /* lwIP.h */,
 				D36528361F3D54C7002D1155 /* ZPPacketTunnel.h */,
 				D365283A1F3D551F002D1155 /* ZPPacketTunnelEx.h */,
 				D36528371F3D54C7002D1155 /* ZPPacketTunnel.m */,
 				D365283C1F3D556A002D1155 /* ZPTCPConnection.h */,
 				D36528401F3D5578002D1155 /* ZPTCPConnectionEx.h */,
 				D365283D1F3D556A002D1155 /* ZPTCPConnection.m */,
-				D36528421F3D55E4002D1155 /* lwIP.h */,
 			);
 			name = src;
 			sourceTree = "<group>";

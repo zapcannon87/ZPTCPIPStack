@@ -181,9 +181,11 @@ PACK_STRUCT_END
 #if (!LWIP_ARP && LWIP_AUTOIP)
   #error "If you want to use AUTOIP, you have to define LWIP_ARP=1 in your lwipopts.h"
 #endif
+/* ==ZP==
 #if (LWIP_TCP && ((LWIP_EVENT_API && LWIP_CALLBACK_API) || (!LWIP_EVENT_API && !LWIP_CALLBACK_API)))
   #error "One and exactly one of LWIP_EVENT_API and LWIP_CALLBACK_API has to be enabled in your lwipopts.h"
 #endif
+ */
 #if (MEM_LIBC_MALLOC && MEM_USE_POOLS)
   #error "MEM_LIBC_MALLOC and MEM_USE_POOLS may not both be simultaneously enabled in your lwipopts.h"
 #endif
@@ -303,7 +305,7 @@ PACK_STRUCT_END
 #if TCP_SNDLOWAT >= TCP_SND_BUF
   #error "lwip_sanity_check: WARNING: TCP_SNDLOWAT must be less than TCP_SND_BUF. If you know what you are doing, define LWIP_DISABLE_TCP_SANITY_CHECKS to 1 to disable this error."
 #endif
-/* ==ZPTCPIPStack==
+/* ==ZP==
 #if TCP_SNDLOWAT >= (0xFFFF - (4 * TCP_MSS))
   #error "lwip_sanity_check: WARNING: TCP_SNDLOWAT must at least be 4*MSS below u16_t overflow!"
 #endif

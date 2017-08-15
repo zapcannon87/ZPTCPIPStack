@@ -16,6 +16,9 @@
  */
 #define MEM_ALIGNMENT           16
 
+//  IP options
+#define IP_FRAG                 0
+
 //  ARP options
 #define LWIP_ARP                0
 
@@ -35,7 +38,6 @@
 #define TCP_MSS                 (TCP_WND / 2)
 #define TCP_SND_BUF             (TCP_WND)
 #define LWIP_EVENT_API          0
-// TODO: disable callback api
 #define LWIP_CALLBACK_API       1
 
 //  LOOPIF options

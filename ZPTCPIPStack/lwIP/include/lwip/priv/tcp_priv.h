@@ -450,10 +450,12 @@ err_t tcp_send_fin(struct tcp_pcb *pcb);
 err_t tcp_enqueue_flags(struct tcp_pcb *pcb, u8_t flags);
 
 void tcp_rexmit_seg(struct tcp_pcb *pcb, struct tcp_seg *seg);
-
+/* ==ZP== */
+struct tcp_info;
 void tcp_rst(u32_t seqno, u32_t ackno,
        const ip_addr_t *local_ip, const ip_addr_t *remote_ip,
-       u16_t local_port, u16_t remote_port);
+       u16_t local_port, u16_t remote_port, struct tcp_info *tcpInfo);
+/* ==ZP== */
 
 u32_t tcp_next_iss(struct tcp_pcb *pcb);
 

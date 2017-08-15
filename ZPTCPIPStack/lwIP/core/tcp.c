@@ -272,8 +272,8 @@ tcp_close_shutdown(struct tcp_pcb *pcb, u8_t rst_on_unacked_data)
 
       /* don't call tcp_abort here: we must not deallocate the pcb since
          that might not be expected when calling tcp_close */
-      tcp_rst(pcb->snd_nxt, pcb->rcv_nxt, &pcb->local_ip, &pcb->remote_ip,
-               pcb->local_port, pcb->remote_port);
+//      tcp_rst(pcb->snd_nxt, pcb->rcv_nxt, &pcb->local_ip, &pcb->remote_ip,
+//               pcb->local_port, pcb->remote_port);
 
       tcp_pcb_purge(pcb);
       TCP_RMV_ACTIVE(pcb);
@@ -513,7 +513,7 @@ tcp_abandon(struct tcp_pcb *pcb, int reset)
     tcp_backlog_accepted(pcb);
     if (send_rst) {
       LWIP_DEBUGF(TCP_RST_DEBUG, ("tcp_abandon: sending RST\n"));
-      tcp_rst(seqno, ackno, &pcb->local_ip, &pcb->remote_ip, local_port, pcb->remote_port);
+//      tcp_rst(seqno, ackno, &pcb->local_ip, &pcb->remote_ip, local_port, pcb->remote_port);
     }
     last_state = pcb->state;
     memp_free(MEMP_TCP_PCB, pcb);
@@ -1162,8 +1162,8 @@ tcp_slowtmr_start:
       }
 
       if (pcb_reset) {
-        tcp_rst(pcb->snd_nxt, pcb->rcv_nxt, &pcb->local_ip, &pcb->remote_ip,
-                 pcb->local_port, pcb->remote_port);
+//        tcp_rst(pcb->snd_nxt, pcb->rcv_nxt, &pcb->local_ip, &pcb->remote_ip,
+//                 pcb->local_port, pcb->remote_port);
       }
 
       err_arg = pcb->callback_arg;
@@ -1455,90 +1455,96 @@ tcp_recv_null(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
  *
  * @param prio minimum priority
  */
-static void
-tcp_kill_prio(u8_t prio)
-{
-  struct tcp_pcb *pcb, *inactive;
-  u32_t inactivity;
-  u8_t mprio;
-
-  mprio = LWIP_MIN(TCP_PRIO_MAX, prio);
-
-  /* We kill the oldest active connection that has lower priority than prio. */
-  inactivity = 0;
-  inactive = NULL;
-  for (pcb = tcp_active_pcbs; pcb != NULL; pcb = pcb->next) {
-    if (pcb->prio <= mprio &&
-       (u32_t)(tcp_ticks - pcb->tmr) >= inactivity) {
-      inactivity = tcp_ticks - pcb->tmr;
-      inactive = pcb;
-      mprio = pcb->prio;
-    }
-  }
-  if (inactive != NULL) {
-    LWIP_DEBUGF(TCP_DEBUG, ("tcp_kill_prio: killing oldest PCB %p (%"S32_F")\n",
-           (void *)inactive, inactivity));
-    tcp_abort(inactive);
-  }
-}
+/* ==ZP== */
+//static void
+//tcp_kill_prio(u8_t prio)
+//{
+//  struct tcp_pcb *pcb, *inactive;
+//  u32_t inactivity;
+//  u8_t mprio;
+//
+//  mprio = LWIP_MIN(TCP_PRIO_MAX, prio);
+//
+//  /* We kill the oldest active connection that has lower priority than prio. */
+//  inactivity = 0;
+//  inactive = NULL;
+//  for (pcb = tcp_active_pcbs; pcb != NULL; pcb = pcb->next) {
+//    if (pcb->prio <= mprio &&
+//       (u32_t)(tcp_ticks - pcb->tmr) >= inactivity) {
+//      inactivity = tcp_ticks - pcb->tmr;
+//      inactive = pcb;
+//      mprio = pcb->prio;
+//    }
+//  }
+//  if (inactive != NULL) {
+//    LWIP_DEBUGF(TCP_DEBUG, ("tcp_kill_prio: killing oldest PCB %p (%"S32_F")\n",
+//           (void *)inactive, inactivity));
+//    tcp_abort(inactive);
+//  }
+//}
+/* ==ZP== */
 
 /**
  * Kills the oldest connection that is in specific state.
  * Called from tcp_alloc() for LAST_ACK and CLOSING if no more connections are available.
  */
-static void
-tcp_kill_state(enum tcp_state state)
-{
-  struct tcp_pcb *pcb, *inactive;
-  u32_t inactivity;
-
-  LWIP_ASSERT("invalid state", (state == CLOSING) || (state == LAST_ACK));
-
-  inactivity = 0;
-  inactive = NULL;
-  /* Go through the list of active pcbs and get the oldest pcb that is in state
-     CLOSING/LAST_ACK. */
-  for (pcb = tcp_active_pcbs; pcb != NULL; pcb = pcb->next) {
-    if (pcb->state == state) {
-      if ((u32_t)(tcp_ticks - pcb->tmr) >= inactivity) {
-        inactivity = tcp_ticks - pcb->tmr;
-        inactive = pcb;
-      }
-    }
-  }
-  if (inactive != NULL) {
-    LWIP_DEBUGF(TCP_DEBUG, ("tcp_kill_closing: killing oldest %s PCB %p (%"S32_F")\n",
-           tcp_state_str[state], (void *)inactive, inactivity));
-    /* Don't send a RST, since no data is lost. */
-    tcp_abandon(inactive, 0);
-  }
-}
+/* ==ZP== */
+//static void
+//tcp_kill_state(enum tcp_state state)
+//{
+//  struct tcp_pcb *pcb, *inactive;
+//  u32_t inactivity;
+//
+//  LWIP_ASSERT("invalid state", (state == CLOSING) || (state == LAST_ACK));
+//
+//  inactivity = 0;
+//  inactive = NULL;
+//  /* Go through the list of active pcbs and get the oldest pcb that is in state
+//     CLOSING/LAST_ACK. */
+//  for (pcb = tcp_active_pcbs; pcb != NULL; pcb = pcb->next) {
+//    if (pcb->state == state) {
+//      if ((u32_t)(tcp_ticks - pcb->tmr) >= inactivity) {
+//        inactivity = tcp_ticks - pcb->tmr;
+//        inactive = pcb;
+//      }
+//    }
+//  }
+//  if (inactive != NULL) {
+//    LWIP_DEBUGF(TCP_DEBUG, ("tcp_kill_closing: killing oldest %s PCB %p (%"S32_F")\n",
+//           tcp_state_str[state], (void *)inactive, inactivity));
+//    /* Don't send a RST, since no data is lost. */
+//    tcp_abandon(inactive, 0);
+//  }
+//}
+/* ==ZP== */
 
 /**
  * Kills the oldest connection that is in TIME_WAIT state.
  * Called from tcp_alloc() if no more connections are available.
  */
-static void
-tcp_kill_timewait(void)
-{
-  struct tcp_pcb *pcb, *inactive;
-  u32_t inactivity;
-
-  inactivity = 0;
-  inactive = NULL;
-  /* Go through the list of TIME_WAIT pcbs and get the oldest pcb. */
-  for (pcb = tcp_tw_pcbs; pcb != NULL; pcb = pcb->next) {
-    if ((u32_t)(tcp_ticks - pcb->tmr) >= inactivity) {
-      inactivity = tcp_ticks - pcb->tmr;
-      inactive = pcb;
-    }
-  }
-  if (inactive != NULL) {
-    LWIP_DEBUGF(TCP_DEBUG, ("tcp_kill_timewait: killing oldest TIME-WAIT PCB %p (%"S32_F")\n",
-           (void *)inactive, inactivity));
-    tcp_abort(inactive);
-  }
-}
+/* ==ZP== */
+//static void
+//tcp_kill_timewait(void)
+//{
+//  struct tcp_pcb *pcb, *inactive;
+//  u32_t inactivity;
+//
+//  inactivity = 0;
+//  inactive = NULL;
+//  /* Go through the list of TIME_WAIT pcbs and get the oldest pcb. */
+//  for (pcb = tcp_tw_pcbs; pcb != NULL; pcb = pcb->next) {
+//    if ((u32_t)(tcp_ticks - pcb->tmr) >= inactivity) {
+//      inactivity = tcp_ticks - pcb->tmr;
+//      inactive = pcb;
+//    }
+//  }
+//  if (inactive != NULL) {
+//    LWIP_DEBUGF(TCP_DEBUG, ("tcp_kill_timewait: killing oldest TIME-WAIT PCB %p (%"S32_F")\n",
+//           (void *)inactive, inactivity));
+//    tcp_abort(inactive);
+//  }
+//}
+/* ==ZP== */
 
 /**
  * Allocate a new tcp_pcb structure.
@@ -1552,50 +1558,52 @@ tcp_alloc(u8_t prio)
   struct tcp_pcb *pcb;
 
   pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-  if (pcb == NULL) {
-    /* Try killing oldest connection in TIME-WAIT. */
-    LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest TIME-WAIT connection\n"));
-    tcp_kill_timewait();
-    /* Try to allocate a tcp_pcb again. */
-    pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-    if (pcb == NULL) {
-      /* Try killing oldest connection in LAST-ACK (these wouldn't go to TIME-WAIT). */
-      LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest LAST-ACK connection\n"));
-      tcp_kill_state(LAST_ACK);
-      /* Try to allocate a tcp_pcb again. */
-      pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-      if (pcb == NULL) {
-        /* Try killing oldest connection in CLOSING. */
-        LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest CLOSING connection\n"));
-        tcp_kill_state(CLOSING);
-        /* Try to allocate a tcp_pcb again. */
-        pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-        if (pcb == NULL) {
-          /* Try killing active connections with lower priority than the new one. */
-          LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing connection with prio lower than %d\n", prio));
-          tcp_kill_prio(prio);
-          /* Try to allocate a tcp_pcb again. */
-          pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-          if (pcb != NULL) {
-            /* adjust err stats: memp_malloc failed multiple times before */
-            MEMP_STATS_DEC(err, MEMP_TCP_PCB);
-          }
-        }
-        if (pcb != NULL) {
-          /* adjust err stats: memp_malloc failed multiple times before */
-          MEMP_STATS_DEC(err, MEMP_TCP_PCB);
-        }
-      }
-      if (pcb != NULL) {
-        /* adjust err stats: memp_malloc failed multiple times before */
-        MEMP_STATS_DEC(err, MEMP_TCP_PCB);
-      }
-    }
-    if (pcb != NULL) {
-      /* adjust err stats: memp_malloc failed above */
-      MEMP_STATS_DEC(err, MEMP_TCP_PCB);
-    }
-  }
+/* ==ZP== */
+//  if (pcb == NULL) {
+//    /* Try killing oldest connection in TIME-WAIT. */
+//    LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest TIME-WAIT connection\n"));
+//    tcp_kill_timewait();
+//    /* Try to allocate a tcp_pcb again. */
+//    pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
+//    if (pcb == NULL) {
+//      /* Try killing oldest connection in LAST-ACK (these wouldn't go to TIME-WAIT). */
+//      LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest LAST-ACK connection\n"));
+//      tcp_kill_state(LAST_ACK);
+//      /* Try to allocate a tcp_pcb again. */
+//      pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
+//      if (pcb == NULL) {
+//        /* Try killing oldest connection in CLOSING. */
+//        LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest CLOSING connection\n"));
+//        tcp_kill_state(CLOSING);
+//        /* Try to allocate a tcp_pcb again. */
+//        pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
+//        if (pcb == NULL) {
+//          /* Try killing active connections with lower priority than the new one. */
+//          LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing connection with prio lower than %d\n", prio));
+//          tcp_kill_prio(prio);
+//          /* Try to allocate a tcp_pcb again. */
+//          pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
+//          if (pcb != NULL) {
+//            /* adjust err stats: memp_malloc failed multiple times before */
+//            MEMP_STATS_DEC(err, MEMP_TCP_PCB);
+//          }
+//        }
+//        if (pcb != NULL) {
+//          /* adjust err stats: memp_malloc failed multiple times before */
+//          MEMP_STATS_DEC(err, MEMP_TCP_PCB);
+//        }
+//      }
+//      if (pcb != NULL) {
+//        /* adjust err stats: memp_malloc failed multiple times before */
+//        MEMP_STATS_DEC(err, MEMP_TCP_PCB);
+//      }
+//    }
+//    if (pcb != NULL) {
+//      /* adjust err stats: memp_malloc failed above */
+//      MEMP_STATS_DEC(err, MEMP_TCP_PCB);
+//    }
+//  }
+/* ==ZP== */
   if (pcb != NULL) {
     /* zero out the whole pcb, so there is no need to initialize members to zero */
     memset(pcb, 0, sizeof(struct tcp_pcb));
@@ -1612,8 +1620,8 @@ tcp_alloc(u8_t prio)
     pcb->sv = 3000 / TCP_SLOW_INTERVAL;
     pcb->rtime = -1;
     pcb->cwnd = 1;
-    pcb->tmr = tcp_ticks;
-    pcb->last_timer = tcp_timer_ctr;
+    pcb->tmr = 0; /* ==ZP== */
+    pcb->last_timer = 0; /* ==ZP== */
 
     /* RFC 5681 recommends setting ssthresh abritrarily high and gives an example
     of using the largest advertised receive window.  We've seen complications with

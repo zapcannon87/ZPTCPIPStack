@@ -8,6 +8,19 @@
 
 #import <Foundation/Foundation.h>
 
+@class ZPTCPConnection;
+
+@protocol ZPTCPConnectionDelegate <NSObject>
+
+@end
+
 @interface ZPTCPConnection : NSObject
+
+@property (nonatomic, weak, nullable) id<ZPTCPConnectionDelegate> delegate;
+
+@property (nonatomic, strong, readonly, nonnull) NSString *srcAddr;
+@property (nonatomic, strong, readonly, nonnull) NSString *destAddr;
+@property (nonatomic, assign, readonly) UInt16 srcPort;
+@property (nonatomic, assign, readonly) UInt16 destPort;
 
 @end

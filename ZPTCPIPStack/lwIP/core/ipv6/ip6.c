@@ -58,6 +58,7 @@
 #include "lwip/mld6.h"
 #include "lwip/debug.h"
 #include "lwip/stats.h"
+#include "lwIP.h" /* ==ZP== */
 
 #ifdef LWIP_HOOK_FILENAME
 #include LWIP_HOOK_FILENAME
@@ -453,6 +454,8 @@ ip6_input(struct pbuf *p, struct netif *inp)
      ip6_addr_ismulticast(ip_2_ip6(&ip_data.current_iphdr_src))) {
     IP6_STATS_INC(ip6.err);
     IP6_STATS_INC(ip6.drop);
+    // MARK: question: why do not free pbuf ?
+    /* ==ZP== */
     return ERR_OK;
   }
 
@@ -750,7 +753,7 @@ options_done:
     case IP6_NEXTH_TCP:
       /* Point to payload. */
       pbuf_header(p, -(s16_t)ip_data.current_ip_header_tot_len);
-      tcp_input(p, inp);
+      tcp_input_pre(p, inp); /* ==ZP== */
       break;
 #endif /* LWIP_TCP */
 #if LWIP_ICMP6

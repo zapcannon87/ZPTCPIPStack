@@ -9,26 +9,14 @@
 #ifndef lwIP_h
 #define lwIP_h
 
+#import <netinet/in.h>
+
 #include "lwip/tcp.h"
-
-#define AF_UNSPEC       0
-#define AF_INET         2
-#if LWIP_IPV6
-#define AF_INET6        10
-#else /* LWIP_IPV6 */
-#define AF_INET6        AF_UNSPEC
-#endif /* LWIP_IPV6 */
-
-#define IPPROTO_IP      0
-#define IPPROTO_ICMP    1
-#define IPPROTO_TCP     6
-#define IPPROTO_UDP     17
-#if LWIP_IPV6
-#define IPPROTO_IPV6    41
-#define IPPROTO_ICMPV6  58
-#endif /* LWIP_IPV6 */
-#define IPPROTO_UDPLITE 136
-#define IPPROTO_RAW     255
+#include "lwip/prot/tcp.h"
+#include "lwip/priv/tcp_priv.h"
+#include "lwip/inet_chksum.h"
+#include "lwip/ip4_frag.h"
+#include "lwip/ip6_frag.h"
 
 #if LWIP_IPV4 && LWIP_IPV6
 /** @ingroup socket */
@@ -50,5 +38,33 @@
 #define inet_pton(af,src,dst) \
 (((af) == AF_INET6) ? ip6addr_aton((src),(ip6_addr_t*)(dst)) : 0)
 #endif /* LWIP_IPV4 && LWIP_IPV6 */
+
+struct tcp_info {
+    
+    struct tcp_pcb *pcb;
+    
+    struct ip_globals ip_data;
+    
+    struct tcp_hdr *tcphdr;
+    u16_t tcphdr_optlen;
+    u16_t tcphdr_opt1len;
+    u8_t* tcphdr_opt2;
+    u32_t seqno;
+    u32_t ackno;
+    u16_t tcplen;
+    u8_t  flags;
+    
+    u32_t tcp_ticks;
+    
+    u16_t tcp_optidx;
+    
+    struct tcp_seg inseg;
+    struct pbuf    *recv_data;
+    u8_t           recv_flags;
+    tcpwnd_size_t  recv_acked;
+    
+};
+
+void tcp_input_pre(struct pbuf *p, struct netif *inp);
 
 #endif /* lwIP_h */

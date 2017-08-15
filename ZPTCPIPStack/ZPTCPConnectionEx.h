@@ -6,8 +6,20 @@
 //  Copyright © 2017 zapcannon87. All rights reserved.
 //
 
-#ifndef ZPTCPConnectionEx_h
-#define ZPTCPConnectionEx_h
+#import "lwIP.h"
 
+@class ZPPacketTunnel;
 
-#endif /* ZPTCPConnectionEx_h */
+@interface ZPTCPConnection ()
+
+@property (nonatomic, strong) NSString *identifie;
+
+@property (nonatomic, weak) ZPPacketTunnel *tunnel;
+
+@property (nonatomic, assign) struct tcp_info tcpInfo;
+
+@property (nonatomic, strong) dispatch_source_t timer;
+
+@property (nonatomic, strong) dispatch_queue_t  timerQueue;
+
+@end

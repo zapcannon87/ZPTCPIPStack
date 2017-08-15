@@ -29,8 +29,8 @@ typedef void (^OutputBlock)(NSArray<NSData *> *_Nullable packets, NSArray<NSNumb
 
 - (void)mtu:(UInt16)mtu output:(OutputBlock _Nonnull)output;
 
-- (void)ipv4SettingWithAddress:(NSString *_Nonnull)addr
-                       netmask:(NSString *_Nonnull)netmask
-                         error:(NSError *_Nullable *_Nullable)errPtr;
+- (void)ipv4SettingWithAddress:(NSString *_Nonnull)addr netmask:(NSString *_Nonnull)netmask;
+
+- (SInt8)ipPacketInput:(NSData *_Nonnull)data;
 
 @end

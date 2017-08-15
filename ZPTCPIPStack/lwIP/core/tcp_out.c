@@ -57,6 +57,7 @@
 #endif
 
 #include <string.h>
+#include "lwIP.h" /* ==ZP== */
 
 /* Define some copy-macros for checksum-on-copy so that the code looks
    nicer by preventing too many ifdef's. */
@@ -1342,8 +1343,12 @@ tcp_output_segment(struct tcp_seg *seg, struct tcp_pcb *pcb, struct netif *netif
  */
 void
 tcp_rst(u32_t seqno, u32_t ackno,
-  const ip_addr_t *local_ip, const ip_addr_t *remote_ip,
-  u16_t local_port, u16_t remote_port)
+        const ip_addr_t *local_ip, const ip_addr_t *remote_ip,
+        u16_t local_port, u16_t remote_port
+        /* ==ZP== */
+        , struct tcp_info *tcpInfo
+        /* ==ZP== */
+)
 {
   struct pbuf *p;
   struct tcp_hdr *tcphdr;
@@ -1372,8 +1377,8 @@ tcp_rst(u32_t seqno, u32_t ackno,
 
   TCP_STATS_INC(tcp.xmit);
   MIB2_STATS_INC(mib2.tcpoutrsts);
-
-  netif = ip_route(local_ip, remote_ip);
+    
+  netif = tcpInfo->ip_data.current_netif; /* ==ZP== */
   if (netif != NULL) {
 #if CHECKSUM_GEN_TCP
     IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_TCP) {
