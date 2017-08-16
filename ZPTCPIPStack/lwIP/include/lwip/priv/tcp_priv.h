@@ -78,7 +78,7 @@ void             tcp_input   (struct pbuf *p, struct zp_tcp_block *block); /* ==
 /* Used within the TCP code only: */
 struct tcp_pcb * tcp_alloc   (u8_t prio);
 void             tcp_abandon (struct tcp_pcb *pcb, int reset, struct zp_tcp_block *block); /* ==ZP== */
-err_t            tcp_send_empty_ack(struct tcp_pcb *pcb);
+err_t            tcp_send_empty_ack(struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 void             tcp_rexmit  (struct tcp_pcb *pcb);
 void             tcp_rexmit_rto  (struct tcp_pcb *pcb);
 void             tcp_rexmit_fast (struct tcp_pcb *pcb);

@@ -916,7 +916,9 @@ tcp_build_wnd_scale_option(u32_t *opts)
  * @param pcb Protocol control block for the TCP connection to send the ACK
  */
 err_t
-tcp_send_empty_ack(struct tcp_pcb *pcb)
+tcp_send_empty_ack(struct tcp_pcb *pcb
+                   , struct zp_tcp_block *block /* ==ZP== */
+                   )
 {
   err_t err;
   struct pbuf *p;
@@ -954,7 +956,7 @@ tcp_send_empty_ack(struct tcp_pcb *pcb)
   }
 #endif
 
-  netif = ip_route(&pcb->local_ip, &pcb->remote_ip);
+  netif = block->ip_data.current_netif; /* ==ZP== */
   if (netif == NULL) {
     err = ERR_RTE;
   } else {
@@ -1026,7 +1028,7 @@ tcp_output(struct tcp_pcb *pcb)
   if (pcb->flags & TF_ACK_NOW &&
      (seg == NULL ||
       lwip_ntohl(seg->tcphdr->seqno) - pcb->lastack + seg->len > wnd)) {
-     return tcp_send_empty_ack(pcb);
+//     return tcp_send_empty_ack(pcb);
   }
 
   /* useg should point to last segment on unacked queue */
