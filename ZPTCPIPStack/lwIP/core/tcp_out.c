@@ -1345,7 +1345,7 @@ void
 tcp_rst(u32_t seqno, u32_t ackno,
         const ip_addr_t *local_ip, const ip_addr_t *remote_ip,
         u16_t local_port, u16_t remote_port
-        , struct tcp_info *tcpInfo /* ==ZP== */
+        , struct zp_tcp_block *block /* ==ZP== */
 )
 {
   struct pbuf *p;
@@ -1376,7 +1376,7 @@ tcp_rst(u32_t seqno, u32_t ackno,
   TCP_STATS_INC(tcp.xmit);
   MIB2_STATS_INC(mib2.tcpoutrsts);
     
-  netif = tcpInfo->ip_data.current_netif; /* ==ZP== */
+  netif = block->ip_data.current_netif; /* ==ZP== */
   if (netif != NULL) {
 #if CHECKSUM_GEN_TCP
     IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_TCP) {

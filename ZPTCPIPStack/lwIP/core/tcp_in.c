@@ -58,6 +58,7 @@
 #if LWIP_ND6_TCP_REACHABILITY_HINTS
 #include "lwip/nd6.h"
 #endif /* LWIP_ND6_TCP_REACHABILITY_HINTS */
+#include "lwIP.h" /* ==ZP== */
 
 /** Initial CWND calculation as defined RFC 2581 */
 #define LWIP_TCP_CALC_INITIAL_CWND(mss) LWIP_MIN((4U * (mss)), LWIP_MAX((2U * (mss)), 4380U));
@@ -96,232 +97,235 @@ static void tcp_timewait_input(struct tcp_pcb *pcb);
  * ip_input()).
  *
  * @param p received TCP segment to process (p->payload pointing to the TCP header)
- * @param inp network interface on which this segment was received
  */
 void
-tcp_input(struct pbuf *p, struct netif *inp)
+tcp_input(struct pbuf *p
+          , struct zp_tcp_block *block /* ==ZP== */
+)
 {
-  struct tcp_pcb *pcb, *prev;
-  struct tcp_pcb_listen *lpcb;
-#if SO_REUSE
-  struct tcp_pcb *lpcb_prev = NULL;
-  struct tcp_pcb_listen *lpcb_any = NULL;
-#endif /* SO_REUSE */
-  u8_t hdrlen_bytes;
+  struct tcp_pcb *pcb = block->pcb;
   err_t err;
-
-  LWIP_UNUSED_ARG(inp);
-
-  PERF_START;
-
-  TCP_STATS_INC(tcp.recv);
-  MIB2_STATS_INC(mib2.tcpinsegs);
-
-  tcphdr = (struct tcp_hdr *)p->payload;
-
-#if TCP_INPUT_DEBUG
-  tcp_debug_print(tcphdr);
-#endif
-
-  /* Check that TCP header fits in payload */
-  if (p->len < TCP_HLEN) {
-    /* drop short packets */
-    LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: short packet (%"U16_F" bytes) discarded\n", p->tot_len));
-    TCP_STATS_INC(tcp.lenerr);
-    goto dropped;
-  }
-
-  /* Don't even process incoming broadcasts/multicasts. */
-  if (ip_addr_isbroadcast(ip_current_dest_addr(), ip_current_netif()) ||
-      ip_addr_ismulticast(ip_current_dest_addr())) {
-    TCP_STATS_INC(tcp.proterr);
-    goto dropped;
-  }
-
-#if CHECKSUM_CHECK_TCP
-  IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_TCP) {
-    /* Verify TCP checksum. */
-    u16_t chksum = ip_chksum_pseudo(p, IP_PROTO_TCP, p->tot_len,
-                               ip_current_src_addr(), ip_current_dest_addr());
-    if (chksum != 0) {
-        LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: packet discarded due to failing checksum 0x%04"X16_F"\n",
-          chksum));
-      tcp_debug_print(tcphdr);
-      TCP_STATS_INC(tcp.chkerr);
-      goto dropped;
-    }
-  }
-#endif /* CHECKSUM_CHECK_TCP */
-
-  /* sanity-check header length */
-  hdrlen_bytes = TCPH_HDRLEN(tcphdr) * 4;
-  if ((hdrlen_bytes < TCP_HLEN) || (hdrlen_bytes > p->tot_len)) {
-    LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: invalid header length (%"U16_F")\n", (u16_t)hdrlen_bytes));
-    TCP_STATS_INC(tcp.lenerr);
-    goto dropped;
-  }
-
-  /* Move the payload pointer in the pbuf so that it points to the
-     TCP data instead of the TCP header. */
-  tcphdr_optlen = hdrlen_bytes - TCP_HLEN;
-  tcphdr_opt2 = NULL;
-  if (p->len >= hdrlen_bytes) {
-    /* all options are in the first pbuf */
-    tcphdr_opt1len = tcphdr_optlen;
-    pbuf_header(p, -(s16_t)hdrlen_bytes); /* cannot fail */
-  } else {
-    u16_t opt2len;
-    /* TCP header fits into first pbuf, options don't - data is in the next pbuf */
-    /* there must be a next pbuf, due to hdrlen_bytes sanity check above */
-    LWIP_ASSERT("p->next != NULL", p->next != NULL);
-
-    /* advance over the TCP header (cannot fail) */
-    pbuf_header(p, -TCP_HLEN);
-
-    /* determine how long the first and second parts of the options are */
-    tcphdr_opt1len = p->len;
-    opt2len = tcphdr_optlen - tcphdr_opt1len;
-
-    /* options continue in the next pbuf: set p to zero length and hide the
-        options in the next pbuf (adjusting p->tot_len) */
-    pbuf_header(p, -(s16_t)tcphdr_opt1len);
-
-    /* check that the options fit in the second pbuf */
-    if (opt2len > p->next->len) {
-      /* drop short packets */
-      LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: options overflow second pbuf (%"U16_F" bytes)\n", p->next->len));
-      TCP_STATS_INC(tcp.lenerr);
-      goto dropped;
-    }
-
-    /* remember the pointer to the second part of the options */
-    tcphdr_opt2 = (u8_t*)p->next->payload;
-
-    /* advance p->next to point after the options, and manually
-        adjust p->tot_len to keep it consistent with the changed p->next */
-    pbuf_header(p->next, -(s16_t)opt2len);
-    p->tot_len -= opt2len;
-
-    LWIP_ASSERT("p->len == 0", p->len == 0);
-    LWIP_ASSERT("p->tot_len == p->next->tot_len", p->tot_len == p->next->tot_len);
-  }
-
-  /* Convert fields in TCP header to host byte order. */
-  tcphdr->src = lwip_ntohs(tcphdr->src);
-  tcphdr->dest = lwip_ntohs(tcphdr->dest);
-  seqno = tcphdr->seqno = lwip_ntohl(tcphdr->seqno);
-  ackno = tcphdr->ackno = lwip_ntohl(tcphdr->ackno);
-  tcphdr->wnd = lwip_ntohs(tcphdr->wnd);
-
-  flags = TCPH_FLAGS(tcphdr);
-  tcplen = p->tot_len + ((flags & (TCP_FIN | TCP_SYN)) ? 1 : 0);
-
-  /* Demultiplex an incoming segment. First, we check if it is destined
-     for an active connection. */
-  prev = NULL;
-
-  for (pcb = tcp_active_pcbs; pcb != NULL; pcb = pcb->next) {
-    LWIP_ASSERT("tcp_input: active pcb->state != CLOSED", pcb->state != CLOSED);
-    LWIP_ASSERT("tcp_input: active pcb->state != TIME-WAIT", pcb->state != TIME_WAIT);
-    LWIP_ASSERT("tcp_input: active pcb->state != LISTEN", pcb->state != LISTEN);
-    if (pcb->remote_port == tcphdr->src &&
-        pcb->local_port == tcphdr->dest &&
-        ip_addr_cmp(&pcb->remote_ip, ip_current_src_addr()) &&
-        ip_addr_cmp(&pcb->local_ip, ip_current_dest_addr())) {
-      /* Move this PCB to the front of the list so that subsequent
-         lookups will be faster (we exploit locality in TCP segment
-         arrivals). */
-      LWIP_ASSERT("tcp_input: pcb->next != pcb (before cache)", pcb->next != pcb);
-      if (prev != NULL) {
-        prev->next = pcb->next;
-        pcb->next = tcp_active_pcbs;
-        tcp_active_pcbs = pcb;
-      } else {
-        TCP_STATS_INC(tcp.cachehit);
-      }
-      LWIP_ASSERT("tcp_input: pcb->next != pcb (after cache)", pcb->next != pcb);
-      break;
-    }
-    prev = pcb;
-  }
-
-  if (pcb == NULL) {
-    /* If it did not go to an active connection, we check the connections
-       in the TIME-WAIT state. */
-    for (pcb = tcp_tw_pcbs; pcb != NULL; pcb = pcb->next) {
-      LWIP_ASSERT("tcp_input: TIME-WAIT pcb->state == TIME-WAIT", pcb->state == TIME_WAIT);
-      if (pcb->remote_port == tcphdr->src &&
-          pcb->local_port == tcphdr->dest &&
-          ip_addr_cmp(&pcb->remote_ip, ip_current_src_addr()) &&
-          ip_addr_cmp(&pcb->local_ip, ip_current_dest_addr())) {
-        /* We don't really care enough to move this PCB to the front
-           of the list since we are not very likely to receive that
-           many segments for connections in TIME-WAIT. */
-        LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: packed for TIME_WAITing connection.\n"));
-        tcp_timewait_input(pcb);
-        pbuf_free(p);
-        return;
-      }
-    }
-
-    /* Finally, if we still did not get a match, we check all PCBs that
-       are LISTENing for incoming connections. */
-    prev = NULL;
-    for (lpcb = tcp_listen_pcbs.listen_pcbs; lpcb != NULL; lpcb = lpcb->next) {
-      if (lpcb->local_port == tcphdr->dest) {
-        if (IP_IS_ANY_TYPE_VAL(lpcb->local_ip)) {
-          /* found an ANY TYPE (IPv4/IPv6) match */
-#if SO_REUSE
-          lpcb_any = lpcb;
-          lpcb_prev = prev;
-#else /* SO_REUSE */
-          break;
-#endif /* SO_REUSE */
-        } else if (IP_ADDR_PCB_VERSION_MATCH_EXACT(lpcb, ip_current_dest_addr())) {
-          if (ip_addr_cmp(&lpcb->local_ip, ip_current_dest_addr())) {
-            /* found an exact match */
-            break;
-          } else if (ip_addr_isany(&lpcb->local_ip)) {
-            /* found an ANY-match */
-#if SO_REUSE
-            lpcb_any = lpcb;
-            lpcb_prev = prev;
-#else /* SO_REUSE */
-            break;
- #endif /* SO_REUSE */
-          }
-        }
-      }
-      prev = (struct tcp_pcb *)lpcb;
-    }
-#if SO_REUSE
-    /* first try specific local IP */
-    if (lpcb == NULL) {
-      /* only pass to ANY if no specific local IP has been found */
-      lpcb = lpcb_any;
-      prev = lpcb_prev;
-    }
-#endif /* SO_REUSE */
-    if (lpcb != NULL) {
-      /* Move this PCB to the front of the list so that subsequent
-         lookups will be faster (we exploit locality in TCP segment
-         arrivals). */
-      if (prev != NULL) {
-        ((struct tcp_pcb_listen *)prev)->next = lpcb->next;
-              /* our successor is the remainder of the listening list */
-        lpcb->next = tcp_listen_pcbs.listen_pcbs;
-              /* put this listening pcb at the head of the listening list */
-        tcp_listen_pcbs.listen_pcbs = lpcb;
-      } else {
-        TCP_STATS_INC(tcp.cachehit);
-      }
-
-      LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: packed for LISTENing connection.\n"));
+/* ==ZP== */
+//  struct tcp_pcb_listen *lpcb;
+//#if SO_REUSE
+//  struct tcp_pcb *lpcb_prev = NULL;
+//  struct tcp_pcb_listen *lpcb_any = NULL;
+//#endif /* SO_REUSE */
+//  u8_t hdrlen_bytes;
+//
+//  LWIP_UNUSED_ARG(inp);
+//
+//  PERF_START;
+//
+//  TCP_STATS_INC(tcp.recv);
+//  MIB2_STATS_INC(mib2.tcpinsegs);
+//
+//  tcphdr = (struct tcp_hdr *)p->payload;
+//
+//#if TCP_INPUT_DEBUG
+//  tcp_debug_print(tcphdr);
+//#endif
+//
+//  /* Check that TCP header fits in payload */
+//  if (p->len < TCP_HLEN) {
+//    /* drop short packets */
+//    LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: short packet (%"U16_F" bytes) discarded\n", p->tot_len));
+//    TCP_STATS_INC(tcp.lenerr);
+//    goto dropped;
+//  }
+//
+//  /* Don't even process incoming broadcasts/multicasts. */
+//  if (ip_addr_isbroadcast(ip_current_dest_addr(), ip_current_netif()) ||
+//      ip_addr_ismulticast(ip_current_dest_addr())) {
+//    TCP_STATS_INC(tcp.proterr);
+//    goto dropped;
+//  }
+//
+//#if CHECKSUM_CHECK_TCP
+//  IF__NETIF_CHECKSUM_ENABLED(inp, NETIF_CHECKSUM_CHECK_TCP) {
+//    /* Verify TCP checksum. */
+//    u16_t chksum = ip_chksum_pseudo(p, IP_PROTO_TCP, p->tot_len,
+//                               ip_current_src_addr(), ip_current_dest_addr());
+//    if (chksum != 0) {
+//        LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: packet discarded due to failing checksum 0x%04"X16_F"\n",
+//          chksum));
+//      tcp_debug_print(tcphdr);
+//      TCP_STATS_INC(tcp.chkerr);
+//      goto dropped;
+//    }
+//  }
+//#endif /* CHECKSUM_CHECK_TCP */
+//
+//  /* sanity-check header length */
+//  hdrlen_bytes = TCPH_HDRLEN(tcphdr) * 4;
+//  if ((hdrlen_bytes < TCP_HLEN) || (hdrlen_bytes > p->tot_len)) {
+//    LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: invalid header length (%"U16_F")\n", (u16_t)hdrlen_bytes));
+//    TCP_STATS_INC(tcp.lenerr);
+//    goto dropped;
+//  }
+//
+//  /* Move the payload pointer in the pbuf so that it points to the
+//     TCP data instead of the TCP header. */
+//  tcphdr_optlen = hdrlen_bytes - TCP_HLEN;
+//  tcphdr_opt2 = NULL;
+//  if (p->len >= hdrlen_bytes) {
+//    /* all options are in the first pbuf */
+//    tcphdr_opt1len = tcphdr_optlen;
+//    pbuf_header(p, -(s16_t)hdrlen_bytes); /* cannot fail */
+//  } else {
+//    u16_t opt2len;
+//    /* TCP header fits into first pbuf, options don't - data is in the next pbuf */
+//    /* there must be a next pbuf, due to hdrlen_bytes sanity check above */
+//    LWIP_ASSERT("p->next != NULL", p->next != NULL);
+//
+//    /* advance over the TCP header (cannot fail) */
+//    pbuf_header(p, -TCP_HLEN);
+//
+//    /* determine how long the first and second parts of the options are */
+//    tcphdr_opt1len = p->len;
+//    opt2len = tcphdr_optlen - tcphdr_opt1len;
+//
+//    /* options continue in the next pbuf: set p to zero length and hide the
+//        options in the next pbuf (adjusting p->tot_len) */
+//    pbuf_header(p, -(s16_t)tcphdr_opt1len);
+//
+//    /* check that the options fit in the second pbuf */
+//    if (opt2len > p->next->len) {
+//      /* drop short packets */
+//      LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: options overflow second pbuf (%"U16_F" bytes)\n", p->next->len));
+//      TCP_STATS_INC(tcp.lenerr);
+//      goto dropped;
+//    }
+//
+//    /* remember the pointer to the second part of the options */
+//    tcphdr_opt2 = (u8_t*)p->next->payload;
+//
+//    /* advance p->next to point after the options, and manually
+//        adjust p->tot_len to keep it consistent with the changed p->next */
+//    pbuf_header(p->next, -(s16_t)opt2len);
+//    p->tot_len -= opt2len;
+//
+//    LWIP_ASSERT("p->len == 0", p->len == 0);
+//    LWIP_ASSERT("p->tot_len == p->next->tot_len", p->tot_len == p->next->tot_len);
+//  }
+//
+//  /* Convert fields in TCP header to host byte order. */
+//  tcphdr->src = lwip_ntohs(tcphdr->src);
+//  tcphdr->dest = lwip_ntohs(tcphdr->dest);
+//  seqno = tcphdr->seqno = lwip_ntohl(tcphdr->seqno);
+//  ackno = tcphdr->ackno = lwip_ntohl(tcphdr->ackno);
+//  tcphdr->wnd = lwip_ntohs(tcphdr->wnd);
+//
+//  flags = TCPH_FLAGS(tcphdr);
+//  tcplen = p->tot_len + ((flags & (TCP_FIN | TCP_SYN)) ? 1 : 0);
+//
+//  /* Demultiplex an incoming segment. First, we check if it is destined
+//     for an active connection. */
+//  prev = NULL;
+//
+//  for (pcb = tcp_active_pcbs; pcb != NULL; pcb = pcb->next) {
+//    LWIP_ASSERT("tcp_input: active pcb->state != CLOSED", pcb->state != CLOSED);
+//    LWIP_ASSERT("tcp_input: active pcb->state != TIME-WAIT", pcb->state != TIME_WAIT);
+//    LWIP_ASSERT("tcp_input: active pcb->state != LISTEN", pcb->state != LISTEN);
+//    if (pcb->remote_port == tcphdr->src &&
+//        pcb->local_port == tcphdr->dest &&
+//        ip_addr_cmp(&pcb->remote_ip, ip_current_src_addr()) &&
+//        ip_addr_cmp(&pcb->local_ip, ip_current_dest_addr())) {
+//      /* Move this PCB to the front of the list so that subsequent
+//         lookups will be faster (we exploit locality in TCP segment
+//         arrivals). */
+//      LWIP_ASSERT("tcp_input: pcb->next != pcb (before cache)", pcb->next != pcb);
+//      if (prev != NULL) {
+//        prev->next = pcb->next;
+//        pcb->next = tcp_active_pcbs;
+//        tcp_active_pcbs = pcb;
+//      } else {
+//        TCP_STATS_INC(tcp.cachehit);
+//      }
+//      LWIP_ASSERT("tcp_input: pcb->next != pcb (after cache)", pcb->next != pcb);
+//      break;
+//    }
+//    prev = pcb;
+//  }
+//
+//  if (pcb == NULL) {
+//    /* If it did not go to an active connection, we check the connections
+//       in the TIME-WAIT state. */
+//    for (pcb = tcp_tw_pcbs; pcb != NULL; pcb = pcb->next) {
+//      LWIP_ASSERT("tcp_input: TIME-WAIT pcb->state == TIME-WAIT", pcb->state == TIME_WAIT);
+//      if (pcb->remote_port == tcphdr->src &&
+//          pcb->local_port == tcphdr->dest &&
+//          ip_addr_cmp(&pcb->remote_ip, ip_current_src_addr()) &&
+//          ip_addr_cmp(&pcb->local_ip, ip_current_dest_addr())) {
+//        /* We don't really care enough to move this PCB to the front
+//           of the list since we are not very likely to receive that
+//           many segments for connections in TIME-WAIT. */
+//        LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: packed for TIME_WAITing connection.\n"));
+//        tcp_timewait_input(pcb);
+//        pbuf_free(p);
+//        return;
+//      }
+//    }
+//
+//    /* Finally, if we still did not get a match, we check all PCBs that
+//       are LISTENing for incoming connections. */
+//    prev = NULL;
+//    for (lpcb = tcp_listen_pcbs.listen_pcbs; lpcb != NULL; lpcb = lpcb->next) {
+//      if (lpcb->local_port == tcphdr->dest) {
+//        if (IP_IS_ANY_TYPE_VAL(lpcb->local_ip)) {
+//          /* found an ANY TYPE (IPv4/IPv6) match */
+//#if SO_REUSE
+//          lpcb_any = lpcb;
+//          lpcb_prev = prev;
+//#else /* SO_REUSE */
+//          break;
+//#endif /* SO_REUSE */
+//        } else if (IP_ADDR_PCB_VERSION_MATCH_EXACT(lpcb, ip_current_dest_addr())) {
+//          if (ip_addr_cmp(&lpcb->local_ip, ip_current_dest_addr())) {
+//            /* found an exact match */
+//            break;
+//          } else if (ip_addr_isany(&lpcb->local_ip)) {
+//            /* found an ANY-match */
+//#if SO_REUSE
+//            lpcb_any = lpcb;
+//            lpcb_prev = prev;
+//#else /* SO_REUSE */
+//            break;
+// #endif /* SO_REUSE */
+//          }
+//        }
+//      }
+//      prev = (struct tcp_pcb *)lpcb;
+//    }
+//#if SO_REUSE
+//    /* first try specific local IP */
+//    if (lpcb == NULL) {
+//      /* only pass to ANY if no specific local IP has been found */
+//      lpcb = lpcb_any;
+//      prev = lpcb_prev;
+//    }
+//#endif /* SO_REUSE */
+//    if (lpcb != NULL) {
+//      /* Move this PCB to the front of the list so that subsequent
+//         lookups will be faster (we exploit locality in TCP segment
+//         arrivals). */
+//      if (prev != NULL) {
+//        ((struct tcp_pcb_listen *)prev)->next = lpcb->next;
+//              /* our successor is the remainder of the listening list */
+//        lpcb->next = tcp_listen_pcbs.listen_pcbs;
+//              /* put this listening pcb at the head of the listening list */
+//        tcp_listen_pcbs.listen_pcbs = lpcb;
+//      } else {
+//        TCP_STATS_INC(tcp.cachehit);
+//      }
+//
+//      LWIP_DEBUGF(TCP_INPUT_DEBUG, ("tcp_input: packed for LISTENing connection.\n"));
 //      tcp_listen_input(lpcb);
-      pbuf_free(p);
-      return;
-    }
-  }
+//      pbuf_free(p);
+//      return;
+//    }
+//  }
+/* ==ZP== */
 
 #if TCP_INPUT_DEBUG
   LWIP_DEBUGF(TCP_INPUT_DEBUG, ("+-+-+-+-+-+-+-+-+-+-+-+-+-+- tcp_input: flags "));
@@ -526,10 +530,12 @@ aborted:
   LWIP_ASSERT("tcp_input: tcp_pcbs_sane()", tcp_pcbs_sane());
   PERF_STOP("tcp_input");
   return;
-dropped:
-  TCP_STATS_INC(tcp.drop);
-  MIB2_STATS_INC(mib2.tcpinerrs);
-  pbuf_free(p);
+/* ==ZP== */
+//dropped:
+//  TCP_STATS_INC(tcp.drop);
+//  MIB2_STATS_INC(mib2.tcpinerrs);
+//  pbuf_free(p);
+/* ==ZP== */
 }
 
 /**

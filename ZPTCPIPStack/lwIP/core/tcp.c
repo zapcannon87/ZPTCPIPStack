@@ -268,7 +268,7 @@ tcp_backlog_accepted(struct tcp_pcb* pcb)
  */
 static err_t
 tcp_close_shutdown(struct tcp_pcb *pcb, u8_t rst_on_unacked_data
-                   , struct tcp_info *tcpInfo /* ==ZP== */
+                   , struct zp_tcp_block *block /* ==ZP== */
 )
 {
   if (rst_on_unacked_data && ((pcb->state == ESTABLISHED) || (pcb->state == CLOSE_WAIT))) {
@@ -280,14 +280,14 @@ tcp_close_shutdown(struct tcp_pcb *pcb, u8_t rst_on_unacked_data
       /* don't call tcp_abort here: we must not deallocate the pcb since
          that might not be expected when calling tcp_close */
       tcp_rst(pcb->snd_nxt, pcb->rcv_nxt, &pcb->local_ip, &pcb->remote_ip,
-               pcb->local_port, pcb->remote_port, tcpInfo); /* ==ZP== */
+               pcb->local_port, pcb->remote_port, block); /* ==ZP== */
 
       tcp_pcb_purge(pcb);
 //      TCP_RMV_ACTIVE(pcb); /* ==ZP== */
       if (pcb->state == ESTABLISHED) {
         /* move to TIME_WAIT since we close actively */
         pcb->state = TIME_WAIT;
-//        TCP_REG(&tcp_tw_pcbs, pcb); 
+//        TCP_REG(&tcp_tw_pcbs, pcb); /* ==ZP== */ 
       } else {
 /* ==ZP== */
 //        /* CLOSE_WAIT: deallocate the pcb since we already sent a RST for it */
@@ -296,7 +296,7 @@ tcp_close_shutdown(struct tcp_pcb *pcb, u8_t rst_on_unacked_data
 //          tcp_trigger_input_pcb_close();
 //        } else {
           memp_free(MEMP_TCP_PCB, pcb);
-          tcpInfo->pcb = NULL;
+          block->pcb = NULL;
 //        }
 /* ==ZP== */
       }
@@ -315,13 +315,11 @@ tcp_close_shutdown(struct tcp_pcb *pcb, u8_t rst_on_unacked_data
      * or for a pcb that has been used and then entered the CLOSED state
      * is erroneous, but this should never happen as the pcb has in those cases
      * been freed, and so any remaining handles are bogus. */
-/* ==ZP== */
     if (pcb->local_port != 0) {
-//      TCP_RMV(&tcp_bound_pcbs, pcb);
+//      TCP_RMV(&tcp_bound_pcbs, pcb); /* ==ZP== */
     }
     memp_free(MEMP_TCP_PCB, pcb);
-    tcpInfo->pcb = NULL;
-/* ==ZP== */
+    block->pcb = NULL; /* ==ZP== */
     break;
   case LISTEN:
 /* ==ZP== */
@@ -331,11 +329,9 @@ tcp_close_shutdown(struct tcp_pcb *pcb, u8_t rst_on_unacked_data
 /* ==ZP== */
     break;
   case SYN_SENT:
-/* ==ZP== */
-//    TCP_PCB_REMOVE_ACTIVE(pcb);
+//    TCP_PCB_REMOVE_ACTIVE(pcb); /* ==ZP== */
     memp_free(MEMP_TCP_PCB, pcb);
-    tcpInfo->pcb = NULL;
-/* ==ZP== */
+    block->pcb = NULL; /* ==ZP== */
     MIB2_STATS_INC(mib2.tcpattemptfails);
     break;
   default:
@@ -410,7 +406,7 @@ tcp_close_shutdown_fin(struct tcp_pcb *pcb)
  */
 err_t
 tcp_close(struct tcp_pcb *pcb
-          , struct tcp_info *tcpInfo /* ==ZP== */
+          , struct zp_tcp_block *block /* ==ZP== */
 )
 {
   LWIP_DEBUGF(TCP_DEBUG, ("tcp_close: closing in "));
@@ -421,7 +417,7 @@ tcp_close(struct tcp_pcb *pcb
     pcb->flags |= TF_RXCLOSED;
   }
   /* ... and close */
-  return tcp_close_shutdown(pcb, 1, tcpInfo); /* ==ZP== */
+  return tcp_close_shutdown(pcb, 1, block); /* ==ZP== */
 }
 
 /**
@@ -439,7 +435,7 @@ tcp_close(struct tcp_pcb *pcb
  */
 err_t
 tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx
-             , struct tcp_info *tcpInfo /* ==ZP== */
+             , struct zp_tcp_block *block /* ==ZP== */
 )
 {
   if (pcb->state == LISTEN) {
@@ -450,7 +446,7 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx
     pcb->flags |= TF_RXCLOSED;
     if (shut_tx) {
       /* shutting down the tx AND rx side is the same as closing for the raw API */
-      return tcp_close_shutdown(pcb, 1, tcpInfo); /* ==ZP== */
+      return tcp_close_shutdown(pcb, 1, block); /* ==ZP== */
     }
     /* ... and free buffered data */
     if (pcb->refused_data != NULL) {
@@ -465,7 +461,7 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx
     case SYN_RCVD:
     case ESTABLISHED:
     case CLOSE_WAIT:
-      return tcp_close_shutdown(pcb, (u8_t)shut_rx, tcpInfo); /* ==ZP== */
+      return tcp_close_shutdown(pcb, (u8_t)shut_rx, block); /* ==ZP== */
     default:
       /* Not (yet?) connected, cannot shutdown the TX side as that would bring us
         into CLOSED state, where the PCB is deallocated. */
@@ -485,7 +481,7 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx
  */
 void
 tcp_abandon(struct tcp_pcb *pcb, int reset
-            , struct tcp_info *tcpInfo /* ==ZP== */
+            , struct zp_tcp_block *block /* ==ZP== */
 )
 {
   u32_t seqno, ackno;
@@ -503,7 +499,7 @@ tcp_abandon(struct tcp_pcb *pcb, int reset
   if (pcb->state == TIME_WAIT) {
     tcp_pcb_remove(NULL, pcb); /* ==ZP== */
     memp_free(MEMP_TCP_PCB, pcb);
-    tcpInfo->pcb = NULL; /* ==ZP== */
+    block->pcb = NULL; /* ==ZP== */
   } else {
     int send_rst = 0;
     u16_t local_port = 0;
@@ -538,11 +534,11 @@ tcp_abandon(struct tcp_pcb *pcb, int reset
     tcp_backlog_accepted(pcb);
     if (send_rst) {
       LWIP_DEBUGF(TCP_RST_DEBUG, ("tcp_abandon: sending RST\n"));
-      tcp_rst(seqno, ackno, &pcb->local_ip, &pcb->remote_ip, local_port, pcb->remote_port, tcpInfo);
+      tcp_rst(seqno, ackno, &pcb->local_ip, &pcb->remote_ip, local_port, pcb->remote_port, block); /* ==ZP== */
     }
     last_state = pcb->state;
     memp_free(MEMP_TCP_PCB, pcb);
-    tcpInfo->pcb = NULL;
+    block->pcb = NULL; /* ==ZP== */
     TCP_EVENT_ERR(last_state, errf, errf_arg, ERR_ABRT);
   }
 }

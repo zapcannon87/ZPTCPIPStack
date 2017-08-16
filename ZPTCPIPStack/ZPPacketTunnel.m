@@ -172,8 +172,7 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
     u8_t flags = TCPH_FLAGS(tcphdr);
     u16_t tcplen = p->tot_len + ((flags & (TCP_FIN | TCP_SYN)) ? 1 : 0);
     
-    struct tcp_info tcpinfo = {
-        .ip_data        = ip_data,
+    struct tcp_info tcpInfo = {
         .tcphdr         = tcphdr,
         .tcphdr_optlen  = tcphdr_optlen,
         .tcphdr_opt1len = tcphdr_opt1len,

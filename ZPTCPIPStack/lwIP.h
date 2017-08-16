@@ -40,11 +40,6 @@
 #endif /* LWIP_IPV4 && LWIP_IPV6 */
 
 struct tcp_info {
-    
-    struct tcp_pcb *pcb;
-    
-    struct ip_globals ip_data;
-    
     struct tcp_hdr *tcphdr;
     u16_t tcphdr_optlen;
     u16_t tcphdr_opt1len;
@@ -53,6 +48,15 @@ struct tcp_info {
     u32_t ackno;
     u16_t tcplen;
     u8_t  flags;
+};
+
+struct zp_tcp_block {
+    
+    struct tcp_pcb *pcb;
+    
+    struct ip_globals ip_data;
+    
+    struct tcp_info tcpInfo;
     
     u32_t tcp_ticks;
     

@@ -54,7 +54,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-struct tcp_info; /* ==ZP== */
+
 /* Functions for interfacing with TCP: */
 
 /* Lower layer interface to TCP: */
@@ -74,10 +74,10 @@ void             tcp_fasttmr (void);
 void             tcp_txnow   (void);
 
 /* Only used by IP to pass a TCP segment to TCP: */
-void             tcp_input   (struct pbuf *p, struct netif *inp);
+void             tcp_input   (struct pbuf *p, struct zp_tcp_block *block); /* ==ZP== */
 /* Used within the TCP code only: */
 struct tcp_pcb * tcp_alloc   (u8_t prio);
-void             tcp_abandon (struct tcp_pcb *pcb, int reset, struct tcp_info *tcpInfo); /* ==ZP== */
+void             tcp_abandon (struct tcp_pcb *pcb, int reset, struct zp_tcp_block *block); /* ==ZP== */
 err_t            tcp_send_empty_ack(struct tcp_pcb *pcb);
 void             tcp_rexmit  (struct tcp_pcb *pcb);
 void             tcp_rexmit_rto  (struct tcp_pcb *pcb);
@@ -452,7 +452,7 @@ err_t tcp_enqueue_flags(struct tcp_pcb *pcb, u8_t flags);
 void tcp_rexmit_seg(struct tcp_pcb *pcb, struct tcp_seg *seg);
 void tcp_rst(u32_t seqno, u32_t ackno,
        const ip_addr_t *local_ip, const ip_addr_t *remote_ip,
-       u16_t local_port, u16_t remote_port, struct tcp_info *tcpInfo); /* ==ZP== */
+       u16_t local_port, u16_t remote_port, struct zp_tcp_block *block); /* ==ZP== */
 
 u32_t tcp_next_iss(struct tcp_pcb *pcb);
 

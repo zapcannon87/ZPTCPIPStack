@@ -16,7 +16,7 @@
 
 @property (nonatomic, weak) ZPPacketTunnel *tunnel;
 
-@property (nonatomic, assign) struct tcp_info tcpInfo;
+@property (nonatomic, assign) struct zp_tcp_block tcpBlock;
 
 @property (nonatomic, strong) dispatch_source_t timer;
 
