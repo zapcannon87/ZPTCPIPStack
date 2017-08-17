@@ -93,7 +93,7 @@
 #endif
 
 /* Forward declarations.*/
-static err_t tcp_output_segment(struct tcp_seg *seg, struct tcp_pcb *pcb, struct netif *netif);
+static err_t tcp_output_segment(struct tcp_seg *seg, struct tcp_pcb *pcb, struct netif *netif, struct zp_tcp_block *block); /* ==ZP== */
 
 /** Allocate a pbuf and create a tcphdr at p->payload, used for output
  * functions other than the default tcp_output -> tcp_output_segment
@@ -993,7 +993,9 @@ tcp_send_empty_ack(struct tcp_pcb *pcb
  *         another err_t on error
  */
 err_t
-tcp_output(struct tcp_pcb *pcb)
+tcp_output(struct tcp_pcb *pcb
+           , struct zp_tcp_block *block /* ==ZP== */
+           )
 {
   struct tcp_seg *seg, *useg;
   u32_t wnd, snd_nxt;
@@ -1007,13 +1009,15 @@ tcp_output(struct tcp_pcb *pcb)
   LWIP_ASSERT("don't call tcp_output for listen-pcbs",
     pcb->state != LISTEN);
 
-  /* First, check if we are invoked by the TCP input processing
-     code. If so, we do not output anything. Instead, we rely on the
-     input processing code to call us when input processing is done
-     with. */
-  if (tcp_input_pcb == pcb) {
-    return ERR_OK;
-  }
+/* ==ZP== */
+//  /* First, check if we are invoked by the TCP input processing
+//     code. If so, we do not output anything. Instead, we rely on the
+//     input processing code to call us when input processing is done
+//     with. */
+//  if (tcp_input_pcb == pcb) {
+//    return ERR_OK;
+//  }
+/* ==ZP== */
 
   wnd = LWIP_MIN(pcb->snd_wnd, pcb->cwnd);
 
@@ -1028,7 +1032,7 @@ tcp_output(struct tcp_pcb *pcb)
   if (pcb->flags & TF_ACK_NOW &&
      (seg == NULL ||
       lwip_ntohl(seg->tcphdr->seqno) - pcb->lastack + seg->len > wnd)) {
-//     return tcp_send_empty_ack(pcb);
+     return tcp_send_empty_ack(pcb, block);
   }
 
   /* useg should point to last segment on unacked queue */
@@ -1037,7 +1041,7 @@ tcp_output(struct tcp_pcb *pcb)
     for (; useg->next != NULL; useg = useg->next);
   }
 
-  netif = ip_route(&pcb->local_ip, &pcb->remote_ip);
+  netif = block->ip_data.current_netif; /* ==ZP== */
   if (netif == NULL) {
     return ERR_RTE;
   }
@@ -1122,7 +1126,7 @@ tcp_output(struct tcp_pcb *pcb)
 #if TCP_OVERSIZE_DBGCHECK
     seg->oversize_left = 0;
 #endif /* TCP_OVERSIZE_DBGCHECK */
-    err = tcp_output_segment(seg, pcb, netif);
+    err = tcp_output_segment(seg, pcb, netif, block);
     if (err != ERR_OK) {
       /* segment could not be sent, for whatever reason */
       pcb->flags |= TF_NAGLEMEMERR;
@@ -1189,7 +1193,9 @@ output_done:
  * @param netif the netif used to send the segment
  */
 static err_t
-tcp_output_segment(struct tcp_seg *seg, struct tcp_pcb *pcb, struct netif *netif)
+tcp_output_segment(struct tcp_seg *seg, struct tcp_pcb *pcb, struct netif *netif
+                   , struct zp_tcp_block *block /* ==ZP== */
+                   )
 {
   err_t err;
   u16_t len;
@@ -1227,7 +1233,7 @@ tcp_output_segment(struct tcp_seg *seg, struct tcp_pcb *pcb, struct netif *netif
   if (seg->flags & TF_SEG_OPTS_MSS) {
     u16_t mss;
 #if TCP_CALCULATE_EFF_SEND_MSS
-    mss = tcp_eff_send_mss(TCP_MSS, &pcb->local_ip, &pcb->remote_ip);
+    mss = tcp_eff_send_mss(TCP_MSS, &pcb->local_ip, &pcb->remote_ip, block); /* ==ZP== */
 #else /* TCP_CALCULATE_EFF_SEND_MSS */
     mss = TCP_MSS;
 #endif /* TCP_CALCULATE_EFF_SEND_MSS */
@@ -1256,7 +1262,7 @@ tcp_output_segment(struct tcp_seg *seg, struct tcp_pcb *pcb, struct netif *netif
   }
 
   if (pcb->rttest == 0) {
-    pcb->rttest = tcp_ticks;
+    pcb->rttest = block->tcp_ticks;
     pcb->rtseq = lwip_ntohl(seg->tcphdr->seqno);
 
     LWIP_DEBUGF(TCP_RTO_DEBUG, ("tcp_output_segment: rtseq %"U32_F"\n", pcb->rtseq));
@@ -1401,7 +1407,9 @@ tcp_rst(u32_t seqno, u32_t ackno,
  * @param pcb the tcp_pcb for which to re-enqueue all unacked segments
  */
 void
-tcp_rexmit_rto(struct tcp_pcb *pcb)
+tcp_rexmit_rto(struct tcp_pcb *pcb
+               , struct zp_tcp_block *block /* ==ZP== */
+               )
 {
   struct tcp_seg *seg;
 
@@ -1433,7 +1441,7 @@ tcp_rexmit_rto(struct tcp_pcb *pcb)
   pcb->rttest = 0;
 
   /* Do the actual retransmission */
-  tcp_output(pcb);
+  tcp_output(pcb, block);
 }
 
 /**

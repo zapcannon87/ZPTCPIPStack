@@ -389,18 +389,20 @@ void             tcp_backlog_accepted(struct tcp_pcb* pcb);
 #endif /* TCP_LISTEN_BACKLOG */
 #define          tcp_accepted(pcb) /* compatibility define, not needed any more */
 
-void             tcp_recved  (struct tcp_pcb *pcb, u16_t len);
+void             tcp_recved  (struct tcp_pcb *pcb, u16_t len, struct zp_tcp_block *block); /* ==ZP== */
 err_t            tcp_bind    (struct tcp_pcb *pcb, const ip_addr_t *ipaddr,
                               u16_t port);
-err_t            tcp_connect (struct tcp_pcb *pcb, const ip_addr_t *ipaddr,
-                              u16_t port, tcp_connected_fn connected);
+/* ==ZP== */
+//err_t            tcp_connect (struct tcp_pcb *pcb, const ip_addr_t *ipaddr,
+//                              u16_t port, tcp_connected_fn connected);
+/* ==ZP== */
 
 struct tcp_pcb * tcp_listen_with_backlog_and_err(struct tcp_pcb *pcb, u8_t backlog, err_t *err);
 struct tcp_pcb * tcp_listen_with_backlog(struct tcp_pcb *pcb, u8_t backlog);
 /** @ingroup tcp_raw */
 #define          tcp_listen(pcb) tcp_listen_with_backlog(pcb, TCP_DEFAULT_LISTEN_BACKLOG)
 
-void             tcp_abort (struct tcp_pcb *pcb);
+void             tcp_abort (struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 err_t            tcp_close   (struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 err_t            tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx, struct zp_tcp_block *block); /* ==ZP== */
 
@@ -418,7 +420,7 @@ void             tcp_setprio (struct tcp_pcb *pcb, u8_t prio);
 #define TCP_PRIO_NORMAL 64
 #define TCP_PRIO_MAX    127
 
-err_t            tcp_output  (struct tcp_pcb *pcb);
+err_t            tcp_output  (struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 
 
 const char* tcp_debug_state_str(enum tcp_state s);

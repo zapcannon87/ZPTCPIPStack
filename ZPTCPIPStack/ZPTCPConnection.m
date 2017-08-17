@@ -122,12 +122,12 @@ void zp_tcp_err(void *arg, err_t err)
             config_tcp_callback(npcb);
             
             /* Parse any options in the SYN. */
-//            tcp_parseopt(npcb);
+            tcp_parseopt(npcb, &_tcpBlock);
             npcb->snd_wnd = _tcpBlock.tcpInfo.tcphdr->wnd;
             npcb->snd_wnd_max = npcb->snd_wnd;
             
 #if TCP_CALCULATE_EFF_SEND_MSS
-            npcb->mss = tcp_eff_send_mss(npcb->mss, &npcb->local_ip, &npcb->remote_ip);
+            npcb->mss = tcp_eff_send_mss(npcb->mss, &npcb->local_ip, &npcb->remote_ip, &_tcpBlock);
 #endif /* TCP_CALCULATE_EFF_SEND_MSS */
             
             MIB2_STATS_INC(mib2.tcppassiveopens);
@@ -138,7 +138,7 @@ void zp_tcp_err(void *arg, err_t err)
                 tcp_abandon(npcb, 0, &_tcpBlock);
                 return NULL;
             }
-            tcp_output(npcb);
+            tcp_output(npcb, &_tcpBlock);
             
             /* setup timer & run loop queue */
             _timerQueue = dispatch_queue_create("ZPTCPConnection.timerQueue", NULL);

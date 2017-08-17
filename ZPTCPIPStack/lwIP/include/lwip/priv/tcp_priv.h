@@ -71,7 +71,7 @@ void             tcp_fasttmr (void);
    returned a memory error on transmit and now has free buffers to send more.
    This iterates all active pcbs that had an error and tries to call
    tcp_output, so use this with care as it might slow down the system. */
-void             tcp_txnow   (void);
+void             tcp_txnow   (struct zp_tcp_block * block); /* ==ZP== */
 
 /* Only used by IP to pass a TCP segment to TCP: */
 void             tcp_input   (struct pbuf *p, struct zp_tcp_block *block); /* ==ZP== */
@@ -80,7 +80,7 @@ struct tcp_pcb * tcp_alloc   (u8_t prio);
 void             tcp_abandon (struct tcp_pcb *pcb, int reset, struct zp_tcp_block *block); /* ==ZP== */
 err_t            tcp_send_empty_ack(struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 void             tcp_rexmit  (struct tcp_pcb *pcb);
-void             tcp_rexmit_rto  (struct tcp_pcb *pcb);
+void             tcp_rexmit_rto  (struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 void             tcp_rexmit_fast (struct tcp_pcb *pcb);
 u32_t            tcp_update_rcv_ann_wnd(struct tcp_pcb *pcb);
 err_t            tcp_process_refused_data(struct tcp_pcb *pcb);
@@ -424,7 +424,7 @@ extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
 /* Internal functions: */
 struct tcp_pcb *tcp_pcb_copy(struct tcp_pcb *pcb);
 void tcp_pcb_purge(struct tcp_pcb *pcb);
-void tcp_pcb_remove(struct tcp_pcb **pcblist, struct tcp_pcb *pcb);
+void tcp_pcb_remove(struct tcp_pcb **pcblist, struct tcp_pcb *pcb, struct zp_tcp_block * block); /* ==ZP== */
 
 void tcp_segs_free(struct tcp_seg *seg);
 void tcp_seg_free(struct tcp_seg *seg);
@@ -458,18 +458,20 @@ u32_t tcp_next_iss(struct tcp_pcb *pcb);
 
 err_t tcp_keepalive(struct tcp_pcb *pcb);
 err_t tcp_zero_window_probe(struct tcp_pcb *pcb);
-void  tcp_trigger_input_pcb_close(void);
+void  tcp_trigger_input_pcb_close(struct zp_tcp_block *block); /* ==ZP== */
+void  tcp_parseopt(struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 
 #if TCP_CALCULATE_EFF_SEND_MSS
 u16_t tcp_eff_send_mss_impl(u16_t sendmss, const ip_addr_t *dest
 #if LWIP_IPV6 || LWIP_IPV4_SRC_ROUTING
                            , const ip_addr_t *src
 #endif /* LWIP_IPV6 || LWIP_IPV4_SRC_ROUTING */
+                           , struct zp_tcp_block *block /* ==ZP== */
                            );
 #if LWIP_IPV6 || LWIP_IPV4_SRC_ROUTING
-#define tcp_eff_send_mss(sendmss, src, dest) tcp_eff_send_mss_impl(sendmss, dest, src)
+#define tcp_eff_send_mss(sendmss, src, dest, block) tcp_eff_send_mss_impl(sendmss, dest, src, block)
 #else /* LWIP_IPV6 || LWIP_IPV4_SRC_ROUTING */
-#define tcp_eff_send_mss(sendmss, src, dest) tcp_eff_send_mss_impl(sendmss, dest)
+#define tcp_eff_send_mss(sendmss, src, dest, block) tcp_eff_send_mss_impl(sendmss, dest, block)
 #endif /* LWIP_IPV6 || LWIP_IPV4_SRC_ROUTING */
 #endif /* TCP_CALCULATE_EFF_SEND_MSS */
 
