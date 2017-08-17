@@ -63,6 +63,7 @@
 /** Initial CWND calculation as defined RFC 2581 */
 #define LWIP_TCP_CALC_INITIAL_CWND(mss) LWIP_MIN((4U * (mss)), LWIP_MAX((2U * (mss)), 4380U));
 
+/* ==ZP== */
 /* These variables are global to all functions involved in the input
    processing of TCP segments. They are set by the tcp_input()
    function. */
@@ -75,12 +76,13 @@
 //static u32_t seqno, ackno;
 //static tcpwnd_size_t recv_acked;
 //static u16_t tcplen;
-static u8_t flags;
+//static u8_t flags;
 
 //static u8_t recv_flags;
 //static struct pbuf *recv_data;
 
-struct tcp_pcb *tcp_input_pcb;
+//struct tcp_pcb *tcp_input_pcb;
+/* ==ZP== */
 
 /* Forward declarations. */
 static err_t tcp_process(struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
@@ -838,7 +840,7 @@ tcp_process(struct tcp_pcb *pcb
       tcp_ack_now(pcb);
     }
     /* received ACK? possibly a half-open connection */
-    else if (flags & TCP_ACK) {
+    else if (block->tcpInfo.flags & TCP_ACK) {
       /* send a RST to bring the other side in a non-synchronized state. */
       tcp_rst(block->tcpInfo.ackno, block->tcpInfo.seqno + block->tcpInfo.tcplen,
               (&block->ip_data.current_iphdr_dest), (&block->ip_data.current_iphdr_src),

@@ -308,25 +308,29 @@ struct tcp_seg {
 #endif /* LWIP_WND_SCALE */
 
 /* Global variables: */
-extern struct tcp_pcb *tcp_input_pcb;
-extern u32_t tcp_ticks;
-extern u8_t tcp_active_pcbs_changed;
+/* ==ZP== */
+//extern struct tcp_pcb *tcp_input_pcb;
+//extern u32_t tcp_ticks;
+//extern u8_t tcp_active_pcbs_changed;
+/* ==ZP== */
 
 /* The TCP PCB lists. */
 union tcp_listen_pcbs_t { /* List of all TCP PCBs in LISTEN state. */
   struct tcp_pcb_listen *listen_pcbs;
   struct tcp_pcb *pcbs;
 };
-extern struct tcp_pcb *tcp_bound_pcbs;
-extern union tcp_listen_pcbs_t tcp_listen_pcbs;
-extern struct tcp_pcb *tcp_active_pcbs;  /* List of all TCP PCBs that are in a
-              state in which they accept or send
-              data. */
-extern struct tcp_pcb *tcp_tw_pcbs;      /* List of all TCP PCBs in TIME-WAIT. */
+/* ==ZP== */
+//extern struct tcp_pcb *tcp_bound_pcbs;
+//extern union tcp_listen_pcbs_t tcp_listen_pcbs;
+//extern struct tcp_pcb *tcp_active_pcbs;  /* List of all TCP PCBs that are in a
+//              state in which they accept or send
+//              data. */
+//extern struct tcp_pcb *tcp_tw_pcbs;      /* List of all TCP PCBs in TIME-WAIT. */
+/* ==ZP== */
 
 #define NUM_TCP_PCB_LISTS_NO_TIME_WAIT  3
 #define NUM_TCP_PCB_LISTS               4
-extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS];
+//extern struct tcp_pcb ** const tcp_pcb_lists[NUM_TCP_PCB_LISTS]; /* ==ZP== */
 
 /* Axioms about the above lists:
    1) Every TCP PCB that is not CLOSED is in one of the lists.

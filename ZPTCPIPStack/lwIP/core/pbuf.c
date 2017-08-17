@@ -164,18 +164,21 @@ static
 void
 pbuf_free_ooseq(void)
 {
-  struct tcp_pcb* pcb;
-  SYS_ARCH_SET(pbuf_free_ooseq_pending, 0);
-
-  for (pcb = tcp_active_pcbs; NULL != pcb; pcb = pcb->next) {
-    if (NULL != pcb->ooseq) {
-      /** Free the ooseq pbufs of one PCB only */
-      LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free_ooseq: freeing out-of-sequence pbufs\n"));
-      tcp_segs_free(pcb->ooseq);
-      pcb->ooseq = NULL;
-      return;
-    }
-  }
+    /* ==ZP== */
+    LWIP_ASSERT("no need.", 0);
+//  struct tcp_pcb* pcb;
+//  SYS_ARCH_SET(pbuf_free_ooseq_pending, 0);
+//
+//  for (pcb = tcp_active_pcbs; NULL != pcb; pcb = pcb->next) {
+//    if (NULL != pcb->ooseq) {
+//      /** Free the ooseq pbufs of one PCB only */
+//      LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_free_ooseq: freeing out-of-sequence pbufs\n"));
+//      tcp_segs_free(pcb->ooseq);
+//      pcb->ooseq = NULL;
+//      return;
+//    }
+//  }
+    /* ==ZP== */
 }
 
 #if !NO_SYS
