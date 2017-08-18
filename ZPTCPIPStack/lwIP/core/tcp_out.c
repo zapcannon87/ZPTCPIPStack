@@ -1542,7 +1542,9 @@ tcp_rexmit_fast(struct tcp_pcb *pcb)
  * @param pcb the tcp_pcb for which to send a keepalive packet
  */
 err_t
-tcp_keepalive(struct tcp_pcb *pcb)
+tcp_keepalive(struct tcp_pcb *pcb
+              , struct zp_tcp_block *block /* ==ZP== */
+              )
 {
   err_t err;
   struct pbuf *p;
@@ -1561,7 +1563,7 @@ tcp_keepalive(struct tcp_pcb *pcb)
                 ("tcp_keepalive: could not allocate memory for pbuf\n"));
     return ERR_MEM;
   }
-  netif = ip_route(&pcb->local_ip, &pcb->remote_ip);
+  netif = block->ip_data.current_netif;
   if (netif == NULL) {
     err = ERR_RTE;
   } else {
@@ -1596,89 +1598,91 @@ tcp_keepalive(struct tcp_pcb *pcb)
  * @param pcb the tcp_pcb for which to send a zero-window probe packet
  */
 err_t
-tcp_zero_window_probe(struct tcp_pcb *pcb)
+tcp_zero_window_probe(struct tcp_pcb *pcb
+                      , struct zp_tcp_block *block /* ==ZP== */
+                      )
 {
-  err_t err;
-  struct pbuf *p;
-  struct tcp_hdr *tcphdr;
-  struct tcp_seg *seg;
-  u16_t len;
-  u8_t is_fin;
-  u32_t snd_nxt;
-  struct netif *netif;
-
-  LWIP_DEBUGF(TCP_DEBUG, ("tcp_zero_window_probe: sending ZERO WINDOW probe to "));
-  ip_addr_debug_print(TCP_DEBUG, &pcb->remote_ip);
-  LWIP_DEBUGF(TCP_DEBUG, ("\n"));
-
-  LWIP_DEBUGF(TCP_DEBUG,
-              ("tcp_zero_window_probe: tcp_ticks %"U32_F
-               "   pcb->tmr %"U32_F" pcb->keep_cnt_sent %"U16_F"\n",
-               tcp_ticks, pcb->tmr, (u16_t)pcb->keep_cnt_sent));
-
-  seg = pcb->unacked;
-
-  if (seg == NULL) {
-    seg = pcb->unsent;
-  }
-  if (seg == NULL) {
-    /* nothing to send, zero window probe not needed */
-    return ERR_OK;
-  }
-
-  is_fin = ((TCPH_FLAGS(seg->tcphdr) & TCP_FIN) != 0) && (seg->len == 0);
-  /* we want to send one seqno: either FIN or data (no options) */
-  len = is_fin ? 0 : 1;
-
-  p = tcp_output_alloc_header(pcb, 0, len, seg->tcphdr->seqno);
-  if (p == NULL) {
-    LWIP_DEBUGF(TCP_DEBUG, ("tcp_zero_window_probe: no memory for pbuf\n"));
-    return ERR_MEM;
-  }
-  tcphdr = (struct tcp_hdr *)p->payload;
-
-  if (is_fin) {
-    /* FIN segment, no data */
-    TCPH_FLAGS_SET(tcphdr, TCP_ACK | TCP_FIN);
-  } else {
-    /* Data segment, copy in one byte from the head of the unacked queue */
-    char *d = ((char *)p->payload + TCP_HLEN);
-    /* Depending on whether the segment has already been sent (unacked) or not
-       (unsent), seg->p->payload points to the IP header or TCP header.
-       Ensure we copy the first TCP data byte: */
-    pbuf_copy_partial(seg->p, d, 1, seg->p->tot_len - seg->len);
-  }
-
-  /* The byte may be acknowledged without the window being opened. */
-  snd_nxt = lwip_ntohl(seg->tcphdr->seqno) + 1;
-  if (TCP_SEQ_LT(pcb->snd_nxt, snd_nxt)) {
-    pcb->snd_nxt = snd_nxt;
-  }
-
-  netif = ip_route(&pcb->local_ip, &pcb->remote_ip);
-  if (netif == NULL) {
-    err = ERR_RTE;
-  } else {
-#if CHECKSUM_GEN_TCP
-    IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_TCP) {
-      tcphdr->chksum = ip_chksum_pseudo(p, IP_PROTO_TCP, p->tot_len,
-        &pcb->local_ip, &pcb->remote_ip);
+    err_t err;
+    struct pbuf *p;
+    struct tcp_hdr *tcphdr;
+    struct tcp_seg *seg;
+    u16_t len;
+    u8_t is_fin;
+    u32_t snd_nxt;
+    struct netif *netif;
+    
+    LWIP_DEBUGF(TCP_DEBUG, ("tcp_zero_window_probe: sending ZERO WINDOW probe to "));
+    ip_addr_debug_print(TCP_DEBUG, &pcb->remote_ip);
+    LWIP_DEBUGF(TCP_DEBUG, ("\n"));
+    
+    LWIP_DEBUGF(TCP_DEBUG,
+                ("tcp_zero_window_probe: tcp_ticks %"U32_F
+                 "   pcb->tmr %"U32_F" pcb->keep_cnt_sent %"U16_F"\n",
+                 tcp_ticks, pcb->tmr, (u16_t)pcb->keep_cnt_sent));
+    
+    seg = pcb->unacked;
+    
+    if (seg == NULL) {
+        seg = pcb->unsent;
     }
+    if (seg == NULL) {
+        /* nothing to send, zero window probe not needed */
+        return ERR_OK;
+    }
+    
+    is_fin = ((TCPH_FLAGS(seg->tcphdr) & TCP_FIN) != 0) && (seg->len == 0);
+    /* we want to send one seqno: either FIN or data (no options) */
+    len = is_fin ? 0 : 1;
+    
+    p = tcp_output_alloc_header(pcb, 0, len, seg->tcphdr->seqno);
+    if (p == NULL) {
+        LWIP_DEBUGF(TCP_DEBUG, ("tcp_zero_window_probe: no memory for pbuf\n"));
+        return ERR_MEM;
+    }
+    tcphdr = (struct tcp_hdr *)p->payload;
+    
+    if (is_fin) {
+        /* FIN segment, no data */
+        TCPH_FLAGS_SET(tcphdr, TCP_ACK | TCP_FIN);
+    } else {
+        /* Data segment, copy in one byte from the head of the unacked queue */
+        char *d = ((char *)p->payload + TCP_HLEN);
+        /* Depending on whether the segment has already been sent (unacked) or not
+         (unsent), seg->p->payload points to the IP header or TCP header.
+         Ensure we copy the first TCP data byte: */
+        pbuf_copy_partial(seg->p, d, 1, seg->p->tot_len - seg->len);
+    }
+    
+    /* The byte may be acknowledged without the window being opened. */
+    snd_nxt = lwip_ntohl(seg->tcphdr->seqno) + 1;
+    if (TCP_SEQ_LT(pcb->snd_nxt, snd_nxt)) {
+        pcb->snd_nxt = snd_nxt;
+    }
+    
+    netif = block->ip_data.current_netif; /* ==ZP== */
+    if (netif == NULL) {
+        err = ERR_RTE;
+    } else {
+#if CHECKSUM_GEN_TCP
+        IF__NETIF_CHECKSUM_ENABLED(netif, NETIF_CHECKSUM_GEN_TCP) {
+            tcphdr->chksum = ip_chksum_pseudo(p, IP_PROTO_TCP, p->tot_len,
+                                              &pcb->local_ip, &pcb->remote_ip);
+        }
 #endif
-    TCP_STATS_INC(tcp.xmit);
-
-    /* Send output to IP */
-    NETIF_SET_HWADDRHINT(netif, &(pcb->addr_hint));
-    err = ip_output_if(p, &pcb->local_ip, &pcb->remote_ip, pcb->ttl,
-      0, IP_PROTO_TCP, netif);
-    NETIF_SET_HWADDRHINT(netif, NULL);
-  }
-
-  pbuf_free(p);
-
-  LWIP_DEBUGF(TCP_DEBUG, ("tcp_zero_window_probe: seqno %"U32_F
-                          " ackno %"U32_F" err %d.\n",
-                          pcb->snd_nxt - 1, pcb->rcv_nxt, (int)err));
-  return err;
+        TCP_STATS_INC(tcp.xmit);
+        
+        /* Send output to IP */
+        NETIF_SET_HWADDRHINT(netif, &(pcb->addr_hint));
+        err = ip_output_if(p, &pcb->local_ip, &pcb->remote_ip, pcb->ttl,
+                           0, IP_PROTO_TCP, netif);
+        NETIF_SET_HWADDRHINT(netif, NULL);
+    }
+    
+    pbuf_free(p);
+    
+    LWIP_DEBUGF(TCP_DEBUG, ("tcp_zero_window_probe: seqno %"U32_F
+                            " ackno %"U32_F" err %d.\n",
+                            pcb->snd_nxt - 1, pcb->rcv_nxt, (int)err));
+    return err;
 }
 #endif /* LWIP_TCP */

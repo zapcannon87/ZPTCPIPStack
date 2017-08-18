@@ -59,13 +59,13 @@ extern "C" {
 
 /* Lower layer interface to TCP: */
 void             tcp_init    (void);  /* Initialize this module. */
-void             tcp_tmr     (void);  /* Must be called every
+void             tcp_tmr     (struct zp_tcp_block *block);  /* Must be called every
                                          TCP_TMR_INTERVAL
                                          ms. (Typically 250 ms). */
 /* It is also possible to call these two functions at the right
    intervals (instead of calling tcp_tmr()). */
-void             tcp_slowtmr (void);
-void             tcp_fasttmr (void);
+void             tcp_slowtmr (struct zp_tcp_block *block); /* ==ZP== */
+void             tcp_fasttmr (struct zp_tcp_block *block); /* ==ZP== */
 
 /* Call this from a netif driver (watch out for threading issues!) that has
    returned a memory error on transmit and now has free buffers to send more.
@@ -458,10 +458,10 @@ void tcp_rst(u32_t seqno, u32_t ackno,
        const ip_addr_t *local_ip, const ip_addr_t *remote_ip,
        u16_t local_port, u16_t remote_port, struct zp_tcp_block *block); /* ==ZP== */
 
-u32_t tcp_next_iss(struct tcp_pcb *pcb);
+u32_t tcp_next_iss(struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 
-err_t tcp_keepalive(struct tcp_pcb *pcb);
-err_t tcp_zero_window_probe(struct tcp_pcb *pcb);
+err_t tcp_keepalive(struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
+err_t tcp_zero_window_probe(struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 void  tcp_trigger_input_pcb_close(struct zp_tcp_block *block); /* ==ZP== */
 void  tcp_parseopt(struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 

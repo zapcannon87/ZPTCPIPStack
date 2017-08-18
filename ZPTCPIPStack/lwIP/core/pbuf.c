@@ -164,8 +164,7 @@ static
 void
 pbuf_free_ooseq(void)
 {
-    /* ==ZP== */
-    LWIP_ASSERT("no need.", 0);
+    LWIP_ASSERT("no need.", 0); /* ==ZP== */
 //  struct tcp_pcb* pcb;
 //  SYS_ARCH_SET(pbuf_free_ooseq_pending, 0);
 //
@@ -178,7 +177,6 @@ pbuf_free_ooseq(void)
 //      return;
 //    }
 //  }
-    /* ==ZP== */
 }
 
 #if !NO_SYS

@@ -101,7 +101,7 @@ void zp_tcp_err(void *arg, err_t err)
             npcb->state = SYN_RCVD;
             npcb->rcv_nxt = _tcpBlock.tcpInfo.seqno + 1;
             npcb->rcv_ann_right_edge = npcb->rcv_nxt;
-            u32_t iss = tcp_next_iss(npcb);
+            u32_t iss = tcp_next_iss(npcb, &_tcpBlock);
             npcb->snd_wl2 = iss;
             npcb->snd_nxt = iss;
             npcb->lastack = iss;

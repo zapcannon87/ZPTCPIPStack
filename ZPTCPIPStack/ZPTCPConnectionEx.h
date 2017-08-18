@@ -22,4 +22,12 @@
 
 @property (nonatomic, strong) dispatch_queue_t  timerQueue;
 
++ (instancetype)newTCPConnectionWith:(ZPPacketTunnel *)tunnel
+                           identifie:(NSString *)identifie
+                              ipData:(struct ip_globals *)ipData
+                             tcpInfo:(struct tcp_info *)tcpInfo
+                                pbuf:(struct pbuf *)pbuf;
+
+- (void)tcpInputWith:(struct tcp_info)info pbuf:(struct pbuf *)pbuf;
+
 @end
