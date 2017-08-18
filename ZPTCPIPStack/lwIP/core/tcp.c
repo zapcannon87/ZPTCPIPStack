@@ -159,19 +159,17 @@ tcp_tmr(struct zp_tcp_block *block) /* ==ZP== */
 {
   /* Call tcp_fasttmr() every 250 ms */
   tcp_fasttmr(block);
-  static uint64_t tcp_timer = 0;
-  if (++tcp_timer & 1) {
+  if (++block->tcp_timer & 1) {
     /* Call tcp_slowtmr() every 500 ms, i.e., every other timer
        tcp_tmr() is called. */
     tcp_slowtmr(block);
   }
 }
 
-#if LWIP_CALLBACK_API || TCP_LISTEN_BACKLOG
+//#if LWIP_CALLBACK_API || TCP_LISTEN_BACKLOG
 /** Called when a listen pcb is closed. Iterates one pcb list and removes the
  * closed listener pcb from pcb->listener if matching.
  */
-/* ==ZP== */
 //static void
 //tcp_remove_listener(struct tcp_pcb *list, struct tcp_pcb_listen *lpcb)
 //{
@@ -182,13 +180,11 @@ tcp_tmr(struct zp_tcp_block *block) /* ==ZP== */
 //      }
 //   }
 //}
-/* ==ZP== */
-#endif
+//#endif
 
 /** Called when a listen pcb is closed. Iterates all pcb lists and removes the
  * closed listener pcb from pcb->listener if matching.
  */
-/* ==ZP== */
 //static void
 //tcp_listen_closed(struct tcp_pcb *pcb)
 //{
@@ -202,7 +198,6 @@ tcp_tmr(struct zp_tcp_block *block) /* ==ZP== */
 //#endif
 //  LWIP_UNUSED_ARG(pcb);
 //}
-/* ==ZP== */
 
 #if TCP_LISTEN_BACKLOG
 /** @ingroup tcp_raw
@@ -395,7 +390,7 @@ tcp_close_shutdown_fin(struct tcp_pcb *pcb
 err_t
 tcp_close(struct tcp_pcb *pcb
           , struct zp_tcp_block *block /* ==ZP== */
-)
+          )
 {
   LWIP_DEBUGF(TCP_DEBUG, ("tcp_close: closing in "));
   tcp_debug_print_state(pcb->state);
@@ -405,7 +400,7 @@ tcp_close(struct tcp_pcb *pcb
     pcb->flags |= TF_RXCLOSED;
   }
   /* ... and close */
-  return tcp_close_shutdown(pcb, 1, block); /* ==ZP== */
+  return tcp_close_shutdown(pcb, 1, block);
 }
 
 /**
@@ -424,7 +419,7 @@ tcp_close(struct tcp_pcb *pcb
 err_t
 tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx
              , struct zp_tcp_block *block /* ==ZP== */
-)
+             )
 {
   if (pcb->state == LISTEN) {
     return ERR_CONN;
@@ -434,7 +429,7 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx
     pcb->flags |= TF_RXCLOSED;
     if (shut_tx) {
       /* shutting down the tx AND rx side is the same as closing for the raw API */
-      return tcp_close_shutdown(pcb, 1, block); /* ==ZP== */
+      return tcp_close_shutdown(pcb, 1, block);
     }
     /* ... and free buffered data */
     if (pcb->refused_data != NULL) {
@@ -449,7 +444,7 @@ tcp_shutdown(struct tcp_pcb *pcb, int shut_rx, int shut_tx
     case SYN_RCVD:
     case ESTABLISHED:
     case CLOSE_WAIT:
-      return tcp_close_shutdown(pcb, (u8_t)shut_rx, block); /* ==ZP== */
+      return tcp_close_shutdown(pcb, (u8_t)shut_rx, block);
     default:
       /* Not (yet?) connected, cannot shutdown the TX side as that would bring us
         into CLOSED state, where the PCB is deallocated. */
@@ -549,7 +544,6 @@ tcp_abort(struct tcp_pcb *pcb
   tcp_abandon(pcb, 1, block);
 }
 
-/* ==ZP== */
 ///**
 // * @ingroup tcp_raw
 // * Binds the connection to a local port number and IP address. If the
@@ -755,7 +749,6 @@ tcp_abort(struct tcp_pcb *pcb
 //  }
 //  return (struct tcp_pcb *)lpcb;
 //}
-/* ==ZP== */
 
 /**
  * Update the state that tracks the available window space to advertise.
@@ -838,7 +831,7 @@ tcp_recved(struct tcp_pcb *pcb, u16_t len
   LWIP_DEBUGF(TCP_DEBUG, ("tcp_recved: received %"U16_F" bytes, wnd %"TCPWNDSIZE_F" (%"TCPWNDSIZE_F").\n",
          len, pcb->rcv_wnd, (u16_t)(TCP_WND_MAX(pcb) - pcb->rcv_wnd)));
 }
-/* ==ZP== */
+
 ///**
 // * Allocate a new local TCP port.
 // *
@@ -984,7 +977,6 @@ tcp_recved(struct tcp_pcb *pcb, u16_t len
 //  }
 //  return ret;
 //}
-/* ==ZP== */
 
 /**
  * Called every 500 ms and implements the retransmission timer and the timer that
@@ -1240,7 +1232,7 @@ tcp_txnow(struct zp_tcp_block * block) /* ==ZP== */
 {
     struct tcp_pcb *pcb = block->pcb;
     if (pcb->flags & TF_NAGLEMEMERR) {
-        tcp_output(pcb, block); /* ==ZP== */
+        tcp_output(pcb, block);
     }
 }
 
@@ -1381,14 +1373,15 @@ tcp_seg_copy(struct tcp_seg *seg)
 err_t
 tcp_recv_null(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
 {
-  LWIP_UNUSED_ARG(arg);
-  if (p != NULL) {
-//    tcp_recved(pcb, p->tot_len); /* ==ZP== */
-    pbuf_free(p);
-  } else if (err == ERR_OK) {
-//    return tcp_close(pcb); /* ==ZP== */
-  }
-  return ERR_OK;
+    LWIP_ASSERT("no need.", 0); /* ==ZP== */
+//    LWIP_UNUSED_ARG(arg);
+//    if (p != NULL) {
+//        tcp_recved(pcb, p->tot_len);
+        pbuf_free(p);
+//    } else if (err == ERR_OK) {
+//        return tcp_close(pcb);
+//    }
+    return ERR_OK;
 }
 #endif /* LWIP_CALLBACK_API */
 
@@ -1398,7 +1391,6 @@ tcp_recv_null(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
  *
  * @param prio minimum priority
  */
-/* ==ZP== */
 //static void
 //tcp_kill_prio(u8_t prio)
 //{
@@ -1425,13 +1417,11 @@ tcp_recv_null(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
 //    tcp_abort(inactive);
 //  }
 //}
-/* ==ZP== */
-
+//
 /**
  * Kills the oldest connection that is in specific state.
  * Called from tcp_alloc() for LAST_ACK and CLOSING if no more connections are available.
  */
-/* ==ZP== */
 //static void
 //tcp_kill_state(enum tcp_state state)
 //{
@@ -1459,13 +1449,11 @@ tcp_recv_null(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
 //    tcp_abandon(inactive, 0);
 //  }
 //}
-/* ==ZP== */
-
+//
 /**
  * Kills the oldest connection that is in TIME_WAIT state.
  * Called from tcp_alloc() if no more connections are available.
  */
-/* ==ZP== */
 //static void
 //tcp_kill_timewait(void)
 //{
@@ -1487,7 +1475,6 @@ tcp_recv_null(void *arg, struct tcp_pcb *pcb, struct pbuf *p, err_t err)
 //    tcp_abort(inactive);
 //  }
 //}
-/* ==ZP== */
 
 /**
  * Allocate a new tcp_pcb structure.
@@ -1501,52 +1488,7 @@ tcp_alloc(u8_t prio)
   struct tcp_pcb *pcb;
 
   pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-/* ==ZP== */
-//  if (pcb == NULL) {
-//    /* Try killing oldest connection in TIME-WAIT. */
-//    LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest TIME-WAIT connection\n"));
-//    tcp_kill_timewait();
-//    /* Try to allocate a tcp_pcb again. */
-//    pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-//    if (pcb == NULL) {
-//      /* Try killing oldest connection in LAST-ACK (these wouldn't go to TIME-WAIT). */
-//      LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest LAST-ACK connection\n"));
-//      tcp_kill_state(LAST_ACK);
-//      /* Try to allocate a tcp_pcb again. */
-//      pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-//      if (pcb == NULL) {
-//        /* Try killing oldest connection in CLOSING. */
-//        LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest CLOSING connection\n"));
-//        tcp_kill_state(CLOSING);
-//        /* Try to allocate a tcp_pcb again. */
-//        pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-//        if (pcb == NULL) {
-//          /* Try killing active connections with lower priority than the new one. */
-//          LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing connection with prio lower than %d\n", prio));
-//          tcp_kill_prio(prio);
-//          /* Try to allocate a tcp_pcb again. */
-//          pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
-//          if (pcb != NULL) {
-//            /* adjust err stats: memp_malloc failed multiple times before */
-//            MEMP_STATS_DEC(err, MEMP_TCP_PCB);
-//          }
-//        }
-//        if (pcb != NULL) {
-//          /* adjust err stats: memp_malloc failed multiple times before */
-//          MEMP_STATS_DEC(err, MEMP_TCP_PCB);
-//        }
-//      }
-//      if (pcb != NULL) {
-//        /* adjust err stats: memp_malloc failed multiple times before */
-//        MEMP_STATS_DEC(err, MEMP_TCP_PCB);
-//      }
-//    }
-//    if (pcb != NULL) {
-//      /* adjust err stats: memp_malloc failed above */
-//      MEMP_STATS_DEC(err, MEMP_TCP_PCB);
-//    }
-//  }
-/* ==ZP== */
+
   if (pcb != NULL) {
     /* zero out the whole pcb, so there is no need to initialize members to zero */
     memset(pcb, 0, sizeof(struct tcp_pcb));
@@ -1757,6 +1699,7 @@ void
 tcp_pcb_purge(struct tcp_pcb *pcb)
 {
     if (pcb->state != CLOSED &&
+//        pcb->state != TIME_WAIT && /* ==ZP== */
         pcb->state != LISTEN) {
         
         LWIP_DEBUGF(TCP_DEBUG, ("tcp_pcb_purge\n"));
@@ -1922,7 +1865,6 @@ tcp_eff_send_mss_impl(u16_t sendmss, const ip_addr_t *dest
 #endif /* TCP_CALCULATE_EFF_SEND_MSS */
 
 /** Helper function for tcp_netif_ip_addr_changed() that iterates a pcb list */
-/* ==ZP== */
 //static void
 //tcp_netif_ip_addr_changed_pcblist(const ip_addr_t* old_addr, struct tcp_pcb* pcb_list)
 //{

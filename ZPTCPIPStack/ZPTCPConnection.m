@@ -65,6 +65,7 @@ void zp_tcp_err(void *arg, err_t err)
         _tcpBlock.ip_data = *ipData;
         _tcpBlock.tcpInfo = *tcpInfo;
         _tcpBlock.tcp_ticks = 0;
+        _tcpBlock.tcp_timer = 0;
         
         if (_tcpBlock.tcpInfo.flags & TCP_RST) {
             /* An incoming RST should be ignored. Return. */
@@ -148,7 +149,7 @@ void zp_tcp_err(void *arg, err_t err)
             dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, interval);
             dispatch_source_set_timer(_timer, start, interval, interval);
             dispatch_source_set_event_handler(_timer, ^{
-                
+                tcp_tmr(&_tcpBlock);
             });
             dispatch_resume(_timer);
         } else {
@@ -161,7 +162,6 @@ void zp_tcp_err(void *arg, err_t err)
 void config_tcp_callback(struct tcp_pcb *pcb)
 {
     pcb->sent      = zp_tcp_sent;
-    // TODO: tcp_recv_null handle
     pcb->recv      = zp_tcp_recv;
     pcb->connected = zp_tcp_connected;
     pcb->poll      = zp_tcp_poll;

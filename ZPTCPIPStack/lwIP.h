@@ -60,6 +60,8 @@ struct zp_tcp_block {
     
     u32_t tcp_ticks;
     
+    uint64_t tcp_timer;
+    
     u16_t tcp_optidx;
     
     struct tcp_seg inseg;
