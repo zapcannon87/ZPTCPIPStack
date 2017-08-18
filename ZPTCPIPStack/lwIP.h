@@ -40,6 +40,9 @@
 #endif /* LWIP_IPV4 && LWIP_IPV6 */
 
 struct tcp_info {
+    /* These variables are global to all functions involved in the input
+     processing of TCP segments. They are set by the tcp_input_pre()
+     function. */
     struct tcp_hdr *tcphdr;
     u16_t tcphdr_optlen;
     u16_t tcphdr_opt1len;
@@ -58,12 +61,15 @@ struct zp_tcp_block {
     
     struct tcp_info tcpInfo;
     
+    /* Incremented every coarse grained timer shot (typically every 500 ms). */
     u32_t tcp_ticks;
-    
+    /* Timer counter to handle calling slow-timer from tcp_tmr() */
     uint64_t tcp_timer;
     
-    u16_t tcp_optidx;
-    
+    /* These variables are global to all functions involved in the input
+     processing of TCP segments. They are set by the tcp_input()
+     function. */
+    u16_t          tcp_optidx;
     struct tcp_seg inseg;
     struct pbuf    *recv_data;
     u8_t           recv_flags;

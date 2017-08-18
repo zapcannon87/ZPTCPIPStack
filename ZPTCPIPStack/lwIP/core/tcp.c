@@ -104,40 +104,11 @@ static const char * const tcp_state_str[] = {
   "TIME_WAIT"
 };
 
-/* last local TCP port */
-//static u16_t tcp_port = TCP_LOCAL_PORT_RANGE_START; /* ==ZP== */
-
-/* Incremented every coarse grained timer shot (typically every 500 ms). */
-//u32_t tcp_ticks; /* ==ZP== */
 static const u8_t tcp_backoff[13] =
     { 1, 2, 3, 4, 5, 6, 7, 7, 7, 7, 7, 7, 7};
  /* Times per slowtmr hits */
 static const u8_t tcp_persist_backoff[7] = { 3, 6, 12, 24, 48, 96, 120 };
-/* ==ZP== */
-///* The TCP PCB lists. */
-//
-///** List of all TCP PCBs bound but not yet (connected || listening) */
-//struct tcp_pcb *tcp_bound_pcbs;
-///** List of all TCP PCBs in LISTEN state */
-//union tcp_listen_pcbs_t tcp_listen_pcbs;
-///** List of all TCP PCBs that are in a state in which
-// * they accept or send data. */
-//struct tcp_pcb *tcp_active_pcbs;
-///** List of all TCP PCBs in TIME-WAIT state */
-//struct tcp_pcb *tcp_tw_pcbs;
-//
-///** An array with all (non-temporary) PCB lists, mainly used for smaller code size */
-//struct tcp_pcb ** const tcp_pcb_lists[] = {&tcp_listen_pcbs.pcbs, &tcp_bound_pcbs,
-//  &tcp_active_pcbs, &tcp_tw_pcbs};
-//
-//u8_t tcp_active_pcbs_changed;
-//
-///** Timer counter to handle calling slow-timer from tcp_tmr() */
-//static u8_t tcp_timer;
-//static u8_t tcp_timer_ctr;
 
-//static u16_t tcp_new_port(void);
-/* ==ZP== */
 static err_t tcp_close_shutdown_fin(struct tcp_pcb *pcb, struct zp_tcp_block *block); /* ==ZP== */
 
 /**

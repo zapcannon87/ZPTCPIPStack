@@ -1009,16 +1009,6 @@ tcp_output(struct tcp_pcb *pcb
   LWIP_ASSERT("don't call tcp_output for listen-pcbs",
     pcb->state != LISTEN);
 
-/* ==ZP== */
-//  /* First, check if we are invoked by the TCP input processing
-//     code. If so, we do not output anything. Instead, we rely on the
-//     input processing code to call us when input processing is done
-//     with. */
-//  if (tcp_input_pcb == pcb) {
-//    return ERR_OK;
-//  }
-/* ==ZP== */
-
   wnd = LWIP_MIN(pcb->snd_wnd, pcb->cwnd);
 
   seg = pcb->unsent;
@@ -1354,7 +1344,7 @@ tcp_rst(u32_t seqno, u32_t ackno,
         const ip_addr_t *local_ip, const ip_addr_t *remote_ip,
         u16_t local_port, u16_t remote_port
         , struct zp_tcp_block *block /* ==ZP== */
-)
+        )
 {
   struct pbuf *p;
   struct tcp_hdr *tcphdr;
