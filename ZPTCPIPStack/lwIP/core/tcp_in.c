@@ -618,18 +618,6 @@ tcp_process(struct tcp_pcb *pcb
       if (TCP_SEQ_BETWEEN(block->tcpInfo.ackno, pcb->lastack+1, pcb->snd_nxt)) {
         pcb->state = ESTABLISHED;
         LWIP_DEBUGF(TCP_DEBUG, ("TCP connection established %"U16_F" -> %"U16_F".\n", inseg.tcphdr->src, inseg.tcphdr->dest));
-/* ==ZP== */
-//#if LWIP_CALLBACK_API || TCP_LISTEN_BACKLOG
-//#if LWIP_CALLBACK_API
-//        LWIP_ASSERT("pcb->listener->accept != NULL",
-//          (pcb->listener == NULL) || (pcb->listener->accept != NULL));
-//#endif
-//        if (pcb->listener == NULL) {
-//          /* listen pcb might be closed by now */
-//          err = ERR_VAL;
-//        } else
-//#endif /* LWIP_CALLBACK_API || TCP_LISTEN_BACKLOG */
-/* ==ZP== */
         {
           tcp_backlog_accepted(pcb);
           /* Call the accept function. */
@@ -692,9 +680,7 @@ tcp_process(struct tcp_pcb *pcb
           ("TCP connection closed: FIN_WAIT_1 %"U16_F" -> %"U16_F".\n", inseg.tcphdr->src, inseg.tcphdr->dest));
         tcp_ack_now(pcb);
         tcp_pcb_purge(pcb);
-//        TCP_RMV_ACTIVE(pcb); /* ==ZP== */
         pcb->state = TIME_WAIT;
-//        TCP_REG(&tcp_tw_pcbs, pcb); /* ==ZP== */
       } else {
         tcp_ack_now(pcb);
         pcb->state = CLOSING;
@@ -710,9 +696,7 @@ tcp_process(struct tcp_pcb *pcb
       LWIP_DEBUGF(TCP_DEBUG, ("TCP connection closed: FIN_WAIT_2 %"U16_F" -> %"U16_F".\n", inseg.tcphdr->src, inseg.tcphdr->dest));
       tcp_ack_now(pcb);
       tcp_pcb_purge(pcb);
-//      TCP_RMV_ACTIVE(pcb); /* ==ZP== */
       pcb->state = TIME_WAIT;
-//      TCP_REG(&tcp_tw_pcbs, pcb); /* ==ZP== */
     }
     break;
   case CLOSING:
@@ -720,9 +704,7 @@ tcp_process(struct tcp_pcb *pcb
     if ((block->tcpInfo.flags & TCP_ACK) && block->tcpInfo.ackno == pcb->snd_nxt && pcb->unsent == NULL) {
       LWIP_DEBUGF(TCP_DEBUG, ("TCP connection closed: CLOSING %"U16_F" -> %"U16_F".\n", inseg.tcphdr->src, inseg.tcphdr->dest));
       tcp_pcb_purge(pcb);
-//      TCP_RMV_ACTIVE(pcb); /* ==ZP== */
       pcb->state = TIME_WAIT;
-//      TCP_REG(&tcp_tw_pcbs, pcb); /* ==ZP== */
     }
     break;
   case LAST_ACK:

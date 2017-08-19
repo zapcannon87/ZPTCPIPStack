@@ -28,6 +28,13 @@
                              tcpInfo:(struct tcp_info *)tcpInfo
                                 pbuf:(struct pbuf *)pbuf;
 
-- (void)tcpInputWith:(struct tcp_info)info pbuf:(struct pbuf *)pbuf;
+- (void)configSrcAddr:(NSString *)srcAddr
+              srcPort:(UInt16)srcPort
+             destAddr:(NSString *)destAddr
+             destPort:(UInt16)destPort;
+
+- (void)tcpInputWith:(struct ip_globals)ipdata
+             tcpInfo:(struct tcp_info)info
+                pbuf:(struct pbuf *)pbuf;
 
 @end

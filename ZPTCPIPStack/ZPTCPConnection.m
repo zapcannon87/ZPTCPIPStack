@@ -23,6 +23,8 @@ err_t zp_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 
 err_t zp_tcp_connected(void *arg, struct tcp_pcb *tpcb, err_t err)
 {
+    ZPTCPConnection *conn = (__bridge ZPTCPConnection *)(arg);
+    [ZPPacketTunnel.shared tcpConnectionEstablished:conn];
     return ERR_OK;
 }
 
@@ -38,6 +40,9 @@ void zp_tcp_err(void *arg, err_t err)
 
 
 @implementation ZPTCPConnection
+{
+    void *IsOnTimerQueueKey;
+}
 
 + (instancetype)newTCPConnectionWith:(ZPPacketTunnel *)tunnel
                            identifie:(NSString *)identifie
@@ -120,7 +125,12 @@ void zp_tcp_err(void *arg, err_t err)
             npcb->polltmr = 0;
             npcb->pollinterval = 2;
             
-            config_tcp_callback(npcb);
+            /* set callback func */
+            npcb->sent      = zp_tcp_sent;
+            npcb->recv      = zp_tcp_recv;
+            npcb->connected = zp_tcp_connected;
+            npcb->poll      = zp_tcp_poll;
+            npcb->errf      = zp_tcp_err;
             
             /* Parse any options in the SYN. */
             tcp_parseopt(npcb, &_tcpBlock);
@@ -141,8 +151,13 @@ void zp_tcp_err(void *arg, err_t err)
             }
             tcp_output(npcb, &_tcpBlock);
             
-            /* setup timer & run loop queue */
+            /* set timer queue */
             _timerQueue = dispatch_queue_create("ZPTCPConnection.timerQueue", NULL);
+            IsOnTimerQueueKey = &IsOnTimerQueueKey;
+            void *nonNullUnusedPointer = (__bridge void *)(self);
+            dispatch_queue_set_specific(_timerQueue, IsOnTimerQueueKey, nonNullUnusedPointer, NULL);
+            
+            /* setup timer */
             _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _timerQueue);
             /* lwIP's doc suggest run the timer checkout 4 times per second */
             int64_t interval = NSEC_PER_SEC * 0.25;
@@ -159,20 +174,41 @@ void zp_tcp_err(void *arg, err_t err)
     return self;
 }
 
-void config_tcp_callback(struct tcp_pcb *pcb)
+- (void)configSrcAddr:(NSString *)srcAddr
+              srcPort:(UInt16)srcPort
+             destAddr:(NSString *)destAddr
+             destPort:(UInt16)destPort
 {
-    pcb->sent      = zp_tcp_sent;
-    pcb->recv      = zp_tcp_recv;
-    pcb->connected = zp_tcp_connected;
-    pcb->poll      = zp_tcp_poll;
-    pcb->errf      = zp_tcp_err;
+    _srcAddr = srcAddr;
+    _srcPort = srcPort;
+    _destAddr = destAddr;
+    _destPort = destPort;
 }
 
-- (void)tcpInputWith:(struct tcp_info)info pbuf:(struct pbuf *)pbuf
+- (void)tcpInputWith:(struct ip_globals)ipdata
+             tcpInfo:(struct tcp_info)info
+                pbuf:(struct pbuf *)pbuf
 {
     dispatch_async(_timerQueue, ^{
+        _tcpBlock.ip_data = ipdata;
         _tcpBlock.tcpInfo = info;
         tcp_input(pbuf, &_tcpBlock);
+    });
+}
+
+// MARK: - API
+
+- (void)write:(NSData *)data
+{
+    dispatch_async(_timerQueue, ^{
+        struct tcp_pcb *pcb = _tcpBlock.pcb;
+        NSAssert(pcb != NULL && data.length <= TCP_SND_BUF, @"error in write data");
+        err_t err = tcp_write(pcb, data.bytes, data.length, 0);
+        if (err != ERR_OK) {
+            tcp_abort(pcb, &_tcpBlock);
+            return;
+        }
+        tcp_output(pcb, &_tcpBlock);
     });
 }
 
