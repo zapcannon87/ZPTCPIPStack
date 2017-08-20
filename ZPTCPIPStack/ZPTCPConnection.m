@@ -131,6 +131,8 @@ void zp_tcp_err(void *arg, err_t err)
                     (&_block->ip_data.current_iphdr_dest), (&_block->ip_data.current_iphdr_src),
                     _block->tcpInfo.tcphdr->dest, _block->tcpInfo.tcphdr->src,
                     _block);
+            return NULL;
+            
         } else if (_block->tcpInfo.flags & TCP_SYN) {
             LWIP_DEBUGF(TCP_DEBUG, ("TCP connection request %"U16_F" -> %"U16_F".\n", tcphdr->src, tcphdr->dest));
             struct tcp_pcb *npcb = tcp_alloc(TCP_PRIO_NORMAL);
@@ -205,7 +207,13 @@ void zp_tcp_err(void *arg, err_t err)
             dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, interval);
             dispatch_source_set_timer(_timer, start, interval, interval);
             dispatch_source_set_event_handler(_timer, ^{
-                tcp_tmr(_block);
+                struct tcp_pcb *pcb = _block->pcb;
+                if (pcb == NULL) {
+                    dispatch_source_cancel(_timer);
+                    [_tunnel removeConnectionForKey:_identifie];
+                } else {
+                    tcp_tmr(_block);
+                }
             });
             dispatch_resume(_timer);
         } else {
