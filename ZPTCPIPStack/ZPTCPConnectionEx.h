@@ -16,11 +16,13 @@
 
 @property (nonatomic, weak) ZPPacketTunnel *tunnel;
 
-@property (nonatomic, assign) struct zp_tcp_block tcpBlock;
+@property (nonatomic, assign) struct zp_tcp_block *block;
 
 @property (nonatomic, strong) dispatch_source_t timer;
 
 @property (nonatomic, strong) dispatch_queue_t  timerQueue;
+
+@property (nonatomic, assign) BOOL canReadData;
 
 + (instancetype)newTCPConnectionWith:(ZPPacketTunnel *)tunnel
                            identifie:(NSString *)identifie

@@ -321,7 +321,9 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 - (void)tcpConnectionEstablished:(ZPTCPConnection *)conn
 {
     dispatch_async(_delegateQueue, ^{
-        [_delegate tunnel:self didEstablishNewTCPConnection:conn];
+        if (_delegate) {
+            [_delegate tunnel:self didEstablishNewTCPConnection:conn];
+        }
     });
 }
 

@@ -257,7 +257,7 @@
 		D36528371F3D54C7002D1155 /* ZPPacketTunnel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZPPacketTunnel.m; sourceTree = "<group>"; };
 		D365283A1F3D551F002D1155 /* ZPPacketTunnelEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZPPacketTunnelEx.h; sourceTree = "<group>"; };
 		D365283C1F3D556A002D1155 /* ZPTCPConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZPTCPConnection.h; sourceTree = "<group>"; };
-		D365283D1F3D556A002D1155 /* ZPTCPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZPTCPConnection.m; sourceTree = "<group>"; };
+		D365283D1F3D556A002D1155 /* ZPTCPConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ZPTCPConnection.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D36528401F3D5578002D1155 /* ZPTCPConnectionEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZPTCPConnectionEx.h; sourceTree = "<group>"; };
 		D36528421F3D55E4002D1155 /* lwIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lwIP.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */

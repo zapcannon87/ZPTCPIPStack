@@ -144,8 +144,9 @@ tcp_input(struct pbuf *p
         goto aborted;
       }
     }
-//    tcp_input_pcb = pcb; /* ==ZP== */
+
     err = tcp_process(pcb, block);
+
     /* A return value of ERR_ABRT means that tcp_abort() was called
        and that the pcb has been freed. If so, we don't do anything. */
     if (err != ERR_ABRT) {
@@ -155,9 +156,9 @@ tcp_input(struct pbuf *p
            application that the connection is dead before we
            deallocate the PCB. */
         TCP_EVENT_ERR(pcb->state, pcb->errf, pcb->callback_arg, ERR_RST);
-        tcp_pcb_remove(NULL, pcb, block); /* ==ZP== */
+        tcp_pcb_remove(NULL, pcb, block);
         memp_free(MEMP_TCP_PCB, pcb);
-        block->pcb = NULL; /* ==ZP== */
+        block->pcb = NULL;
       } else {
         err = ERR_OK;
         /* If the application has registered a "sent" function to be
