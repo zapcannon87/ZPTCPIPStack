@@ -14,10 +14,7 @@
 err_t netif_output(struct pbuf *p, BOOL is_ipv4)
 {
     void *buf = malloc(sizeof(char) * p->tot_len);
-    if (pbuf_copy_partial(p, buf, p->tot_len, 0) == 0) {
-        free(buf);
-        return ERR_BUF;
-    }
+    LWIP_ASSERT("error in pbuf_copy_partial", pbuf_copy_partial(p, buf, p->tot_len, 0) != 0);
     
     NSData *data = [NSData dataWithBytesNoCopy:buf length:p->tot_len];
     NSNumber *ipVersion = [NSNumber numberWithInt:(is_ipv4 ? AF_INET : AF_INET6)];
@@ -272,8 +269,7 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
     /* set address */
     ip4_addr_t ip4_addr;
     const char *addr_chars = [addr cStringUsingEncoding:NSASCIIStringEncoding];
-    NSAssert(inet_pton(AF_INET, addr_chars, &ip4_addr) != 0 &&
-             !ip4_addr_isany(&ip4_addr),
+    NSAssert(inet_pton(AF_INET, addr_chars, &ip4_addr) != 0 && !ip4_addr_isany(&ip4_addr),
              @"error in ipv4 address");
     ip4_addr_set(ip_2_ip4(&netif->ip_addr), &ip4_addr);
     IP_SET_TYPE_VAL(netif->ip_addr, IPADDR_TYPE_V4);
@@ -301,13 +297,8 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
     
     /* copy data bytes to pbuf */
     struct pbuf *p = pbuf_alloc(PBUF_RAW, data.length, PBUF_RAM);
-    if (p == NULL) {
-        return ERR_BUF;
-    }
-    err_t err = pbuf_take(p, data.bytes, data.length);
-    if (err != ERR_OK) {
-        return err;
-    }
+    NSAssert(p != NULL, @"error in pbuf_alloc");
+    NSAssert(pbuf_take(p, data.bytes, data.length) == ERR_OK, @"error in pbuf_take");
     
     if (IP_HDR_GET_VERSION(p->payload) == 6) {
         return ip6_input(p, &_netif);
