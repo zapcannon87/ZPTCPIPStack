@@ -124,10 +124,10 @@
 		D32A513B1F3C603A00C3ADD0 /* lowpan6.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50941F3C603A00C3ADD0 /* lowpan6.h */; };
 		D32A513C1F3C603A00C3ADD0 /* lowpan6_opts.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50951F3C603A00C3ADD0 /* lowpan6_opts.h */; };
 		D32A515E1F3C603A00C3ADD0 /* lwipopts.h in Headers */ = {isa = PBXBuildFile; fileRef = D32A50BB1F3C603A00C3ADD0 /* lwipopts.h */; };
-		D36528381F3D54C7002D1155 /* ZPPacketTunnel.h in Headers */ = {isa = PBXBuildFile; fileRef = D36528361F3D54C7002D1155 /* ZPPacketTunnel.h */; };
+		D36528381F3D54C7002D1155 /* ZPPacketTunnel.h in Headers */ = {isa = PBXBuildFile; fileRef = D36528361F3D54C7002D1155 /* ZPPacketTunnel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D36528391F3D54C7002D1155 /* ZPPacketTunnel.m in Sources */ = {isa = PBXBuildFile; fileRef = D36528371F3D54C7002D1155 /* ZPPacketTunnel.m */; };
 		D365283B1F3D551F002D1155 /* ZPPacketTunnelEx.h in Headers */ = {isa = PBXBuildFile; fileRef = D365283A1F3D551F002D1155 /* ZPPacketTunnelEx.h */; };
-		D365283E1F3D556A002D1155 /* ZPTCPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = D365283C1F3D556A002D1155 /* ZPTCPConnection.h */; };
+		D365283E1F3D556A002D1155 /* ZPTCPConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = D365283C1F3D556A002D1155 /* ZPTCPConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D365283F1F3D556A002D1155 /* ZPTCPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = D365283D1F3D556A002D1155 /* ZPTCPConnection.m */; };
 		D36528411F3D5578002D1155 /* ZPTCPConnectionEx.h in Headers */ = {isa = PBXBuildFile; fileRef = D36528401F3D5578002D1155 /* ZPTCPConnectionEx.h */; };
 		D36528431F3D55E4002D1155 /* lwIP.h in Headers */ = {isa = PBXBuildFile; fileRef = D36528421F3D55E4002D1155 /* lwIP.h */; };
