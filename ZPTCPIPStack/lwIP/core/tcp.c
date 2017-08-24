@@ -989,6 +989,12 @@ tcp_fasttmr(struct zp_tcp_block *block) /* ==ZP== */
     if (pcb->refused_data != NULL) {
         tcp_process_refused_data(pcb);
     }
+    /* if close with after writing */
+    if (block->close_after_writing) {
+        if (pcb->unsent == NULL && pcb->unacked == NULL) {
+            tcp_close(pcb, block);
+        }
+    }
 }
 
 /** Call tcp_output for all active pcbs that have TF_NAGLEMEMERR set */

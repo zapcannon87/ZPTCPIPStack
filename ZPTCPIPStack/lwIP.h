@@ -75,6 +75,8 @@ struct zp_tcp_block {
     u8_t           recv_flags;
     tcpwnd_size_t  recv_acked;
     
+    u8_t close_after_writing;
+    
 };
 
 void tcp_input_pre(struct pbuf *p, struct netif *inp);

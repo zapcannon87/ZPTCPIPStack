@@ -25,7 +25,8 @@ typedef void (^OutputBlock)(NSArray<NSData *> *_Nullable packets, NSArray<NSNumb
 
 + (instancetype _Nonnull)shared;
 
-- (void)delegate:(id<ZPPacketTunnelDelegate> _Nonnull)delegate delegateQueue:(dispatch_queue_t _Nullable)queue;
+- (void)setDelegate:(id<ZPPacketTunnelDelegate> _Nonnull)delegate
+      delegateQueue:(dispatch_queue_t _Nullable)queue;
 
 - (void)mtu:(UInt16)mtu output:(OutputBlock _Nonnull)output;
 

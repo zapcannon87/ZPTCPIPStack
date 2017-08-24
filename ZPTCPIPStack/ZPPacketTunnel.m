@@ -246,7 +246,8 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
     return self;
 }
 
--(void)delegate:(id<ZPPacketTunnelDelegate>)delegate delegateQueue:(dispatch_queue_t)queue
+- (void)setDelegate:(id<ZPPacketTunnelDelegate> _Nonnull)delegate
+      delegateQueue:(dispatch_queue_t _Nullable)queue;
 {
     _delegate = delegate;
     if (queue) {

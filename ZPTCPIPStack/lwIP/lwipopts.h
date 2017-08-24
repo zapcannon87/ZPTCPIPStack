@@ -34,7 +34,7 @@
  * `60`: max IP header length
  * `60`: max TCP header length
  */
-#define TCP_WND                 (65535 - 60 - 60)
+#define TCP_WND                 (65535)
 #define TCP_MSS                 (TCP_WND / 2)
 #define TCP_SND_BUF             (TCP_WND)
 #define LWIP_EVENT_API          0

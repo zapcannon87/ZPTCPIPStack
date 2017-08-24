@@ -10,7 +10,13 @@
 
 @class ZPPacketTunnel;
 
-@interface ZPTCPConnection ()
+@interface ZPTCPConnection () {
+    
+    struct zp_tcp_block tcp_block; /* tcp block instance */
+    
+}
+
+@property (nonatomic, weak) id<ZPTCPConnectionDelegate> delegate;
 
 @property (nonatomic, strong) NSString *identifie;
 

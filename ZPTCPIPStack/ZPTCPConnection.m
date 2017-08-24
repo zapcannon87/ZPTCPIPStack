@@ -11,11 +11,17 @@
 #import "ZPPacketTunnel.h"
 #import "ZPPacketTunnelEx.h"
 
+static void *IsOnTimerQueueKey = &IsOnTimerQueueKey; /* key to identify the queue */
+
 err_t zp_tcp_sent(void *arg, struct tcp_pcb *tpcb, u16_t len)
 {
     ZPTCPConnection *conn = (__bridge ZPTCPConnection *)(arg);
+    LWIP_ASSERT("Must be dispatched on timer queue",
+                dispatch_get_specific(IsOnTimerQueueKey) == (__bridge void *)(conn.timerQueue));
     if (conn.delegate) {
-        [conn.delegate connection:conn didWriteData:len];
+        dispatch_async(conn.delegateQueue, ^{
+            [conn.delegate connection:conn didWriteData:len];
+        });
     }
     return ERR_OK;
 }
@@ -23,20 +29,31 @@ err_t zp_tcp_sent(void *arg, struct tcp_pcb *tpcb, u16_t len)
 err_t zp_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 {
     ZPTCPConnection *conn = (__bridge ZPTCPConnection *)(arg);
+    LWIP_ASSERT("Must be dispatched on timer queue",
+                dispatch_get_specific(IsOnTimerQueueKey) == (__bridge void *)(conn.timerQueue));
+    if (conn.block->close_after_writing) {
+        /* connection has closed, no longer recv data */
+        return ERR_INPROGRESS;
+    }
     if (p == NULL) {
         /* got FIN */
         if (conn.delegate) {
-            [conn.delegate connectionDidCloseReadStream:conn];
+            dispatch_async(conn.delegateQueue, ^{
+                [conn.delegate connectionDidCloseReadStream:conn];
+            });
         }
         return ERR_OK;
     }
     if (conn.canReadData) {
         conn.canReadData = FALSE;
         void *buf = malloc(sizeof(char) * p->tot_len);
-        LWIP_ASSERT("error in pbuf_copy_partial", pbuf_copy_partial(p, buf, p->tot_len, 0) != 0);
+        LWIP_ASSERT("error in pbuf_copy_partial",
+                    pbuf_copy_partial(p, buf, p->tot_len, 0) != 0);
         NSData *data = [NSData dataWithBytesNoCopy:buf length:p->tot_len];
         if (conn.delegate) {
-            [conn.delegate connection:conn didReadData:data];
+            dispatch_async(conn.delegateQueue, ^{
+                [conn.delegate connection:conn didReadData:data];
+            });
         }
         pbuf_free(p);
         tcp_recved(tpcb, p->tot_len, conn.block);
@@ -49,6 +66,8 @@ err_t zp_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 err_t zp_tcp_connected(void *arg, struct tcp_pcb *tpcb, err_t err)
 {
     ZPTCPConnection *conn = (__bridge ZPTCPConnection *)(arg);
+    LWIP_ASSERT("Must be dispatched on timer queue",
+                dispatch_get_specific(IsOnTimerQueueKey) == (__bridge void *)(conn.timerQueue));
     [conn.tunnel tcpConnectionEstablished:conn];
     return ERR_OK;
 }
@@ -61,6 +80,8 @@ err_t zp_tcp_poll(void *arg, struct tcp_pcb *tpcb)
 void zp_tcp_err(void *arg, err_t err)
 {
     ZPTCPConnection *conn = (__bridge ZPTCPConnection *)(arg);
+    LWIP_ASSERT("Must be dispatched on timer queue",
+                dispatch_get_specific(IsOnTimerQueueKey) == (__bridge void *)(conn.timerQueue));
     if (conn.delegate) {
         NSString *errorDomain = NULL;
         if (err == ERR_ABRT) {
@@ -72,19 +93,18 @@ void zp_tcp_err(void *arg, err_t err)
         } else if (err == ERR_CLSD) {
             /* Connection was successfully closed by remote. */
             errorDomain = @"Connection was successfully closed by remote.";
+        } else {
+            errorDomain = @"Unknown error.";
         }
-        if (errorDomain) {
-            NSError *error = [NSError errorWithDomain:errorDomain code:err userInfo:NULL];
+        NSError *error = [NSError errorWithDomain:errorDomain code:err userInfo:NULL];
+        dispatch_async(conn.delegateQueue, ^{
             [conn.delegate connection:conn didDisconnectWithError:error];
-        }
+        });
     }
 }
 
 
 @implementation ZPTCPConnection
-{
-    struct zp_tcp_block tcp_block; /* tcp block instance */
-}
 
 + (instancetype)newTCPConnectionWith:(ZPPacketTunnel *)tunnel
                            identifie:(NSString *)identifie
@@ -114,6 +134,8 @@ void zp_tcp_err(void *arg, err_t err)
         _block->tcpInfo = *tcpInfo;
         _block->tcp_ticks = 0;
         _block->tcp_timer = 0;
+        _block->close_after_writing = 0;
+        
         _canReadData = FALSE;
         
         if (_block->tcpInfo.flags & TCP_RST) {
@@ -199,6 +221,7 @@ void zp_tcp_err(void *arg, err_t err)
             
             /* set timer queue */
             _timerQueue = dispatch_queue_create("ZPTCPConnection.timerQueue", NULL);
+            dispatch_queue_set_specific(_timerQueue, IsOnTimerQueueKey, (__bridge void *)(_timerQueue), NULL);
             
             /* set timer */
             _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _timerQueue);
@@ -247,11 +270,37 @@ void zp_tcp_err(void *arg, err_t err)
 
 // MARK: - API
 
+- (void)syncSetDelegate:(id<ZPTCPConnectionDelegate>)delegate delegateQueue:(dispatch_queue_t)queue
+{
+    NSAssert(dispatch_get_specific(IsOnTimerQueueKey) != (__bridge void *)(_timerQueue),
+             @"Must not be dispatched on timer queue");
+    dispatch_sync(_timerQueue, ^{
+        _delegate = delegate;
+        if (queue) {
+            _delegateQueue = queue;
+        } else {
+            _delegateQueue = dispatch_queue_create("ZPTCPConnection.delegateQueue", NULL);
+        }
+    });
+}
+
+- (void)asyncSetDelegate:(id<ZPTCPConnectionDelegate>)delegate delegateQueue:(dispatch_queue_t)queue
+{
+    dispatch_async(_timerQueue, ^{
+        _delegate = delegate;
+        if (queue) {
+            _delegateQueue = queue;
+        } else {
+            _delegateQueue = dispatch_queue_create("ZPTCPConnection.delegateQueue", NULL);
+        }
+    });
+}
+
 - (void)write:(NSData *)data
 {
     dispatch_async(_timerQueue, ^{
         struct tcp_pcb *pcb = _block->pcb;
-        if (pcb == NULL) {
+        if (pcb == NULL || _block->close_after_writing) {
             return;
         }
         NSAssert(data.length <= TCP_SND_BUF, @"error in write data");
@@ -281,6 +330,13 @@ void zp_tcp_err(void *arg, err_t err)
             return;
         }
         tcp_close(pcb, _block);
+    });
+}
+
+- (void)closeAfterWriting
+{
+    dispatch_async(_timerQueue, ^{
+        _block->close_after_writing = 1;
     });
 }
 
