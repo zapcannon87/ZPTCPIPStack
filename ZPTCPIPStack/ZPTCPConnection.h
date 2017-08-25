@@ -12,13 +12,15 @@
 
 @protocol ZPTCPConnectionDelegate <NSObject>
 
-- (void)connection:(ZPTCPConnection *_Nonnull)connection didWriteData:(UInt16)length;
+- (void)connection:(ZPTCPConnection *_Nonnull)connection didWriteData:(UInt16)length sendBuf:(BOOL)isEmpty;
 
 - (void)connection:(ZPTCPConnection *_Nonnull)connection didReadData:(NSData *_Nonnull)data;
 
 - (void)connectionDidCloseReadStream:(ZPTCPConnection *_Nonnull)connection;
 
 - (void)connection:(ZPTCPConnection *_Nonnull)connection didDisconnectWithError:(NSError *_Nonnull)err;
+
+- (void)connection:(ZPTCPConnection *_Nonnull)connection didCheckWriteDataWithError:(NSError *_Nonnull)err;
 
 @end
 

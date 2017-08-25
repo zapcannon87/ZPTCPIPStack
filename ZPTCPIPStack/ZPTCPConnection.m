@@ -18,11 +18,11 @@ err_t zp_tcp_sent(void *arg, struct tcp_pcb *tpcb, u16_t len)
     ZPTCPConnection *conn = (__bridge ZPTCPConnection *)(arg);
     LWIP_ASSERT("Must be dispatched on timer queue",
                 dispatch_get_specific(IsOnTimerQueueKey) == (__bridge void *)(conn.timerQueue));
-    if (conn.delegate) {
-        dispatch_async(conn.delegateQueue, ^{
-            [conn.delegate connection:conn didWriteData:len];
-        });
-    }
+    dispatch_async(conn.delegateQueue, ^{
+        if (conn.delegate) {
+            [conn.delegate connection:conn didWriteData:len sendBuf:(tpcb->snd_buf == TCP_SND_BUF)];
+        }
+    });
     return ERR_OK;
 }
 
@@ -37,11 +37,11 @@ err_t zp_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
     }
     if (p == NULL) {
         /* got FIN */
-        if (conn.delegate) {
-            dispatch_async(conn.delegateQueue, ^{
+        dispatch_async(conn.delegateQueue, ^{
+            if (conn.delegate) {
                 [conn.delegate connectionDidCloseReadStream:conn];
-            });
-        }
+            }
+        });
         return ERR_OK;
     }
     if (conn.canReadData) {
@@ -50,11 +50,11 @@ err_t zp_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
         LWIP_ASSERT("error in pbuf_copy_partial",
                     pbuf_copy_partial(p, buf, p->tot_len, 0) != 0);
         NSData *data = [NSData dataWithBytesNoCopy:buf length:p->tot_len];
-        if (conn.delegate) {
-            dispatch_async(conn.delegateQueue, ^{
+        dispatch_async(conn.delegateQueue, ^{
+            if (conn.delegate) {
                 [conn.delegate connection:conn didReadData:data];
-            });
-        }
+            }
+        });
         pbuf_free(p);
         tcp_recved(tpcb, p->tot_len, conn.block);
         return ERR_OK;
@@ -82,25 +82,25 @@ void zp_tcp_err(void *arg, err_t err)
     ZPTCPConnection *conn = (__bridge ZPTCPConnection *)(arg);
     LWIP_ASSERT("Must be dispatched on timer queue",
                 dispatch_get_specific(IsOnTimerQueueKey) == (__bridge void *)(conn.timerQueue));
-    if (conn.delegate) {
-        NSString *errorDomain = NULL;
-        if (err == ERR_ABRT) {
-            /* Connection was aborted by local. */
-            errorDomain = @"Connection was aborted by local.";
-        } else if (err == ERR_RST) {
-            /* Connection was reset by remote. */
-            errorDomain = @"Connection was reset by remote.";
-        } else if (err == ERR_CLSD) {
-            /* Connection was successfully closed by remote. */
-            errorDomain = @"Connection was successfully closed by remote.";
-        } else {
-            errorDomain = @"Unknown error.";
-        }
-        NSError *error = [NSError errorWithDomain:errorDomain code:err userInfo:NULL];
-        dispatch_async(conn.delegateQueue, ^{
-            [conn.delegate connection:conn didDisconnectWithError:error];
-        });
+    NSString *errorDomain = NULL;
+    if (err == ERR_ABRT) {
+        /* Connection was aborted by local. */
+        errorDomain = @"Connection was aborted by local.";
+    } else if (err == ERR_RST) {
+        /* Connection was reset by remote. */
+        errorDomain = @"Connection was reset by remote.";
+    } else if (err == ERR_CLSD) {
+        /* Connection was successfully closed by remote. */
+        errorDomain = @"Connection was successfully closed by remote.";
+    } else {
+        errorDomain = @"Unknown error.";
     }
+    NSError *error = [NSError errorWithDomain:errorDomain code:err userInfo:NULL];
+    dispatch_async(conn.delegateQueue, ^{
+        if (conn.delegate) {
+            [conn.delegate connection:conn didDisconnectWithError:error];
+        }
+    });
 }
 
 
@@ -303,10 +303,24 @@ void zp_tcp_err(void *arg, err_t err)
         if (pcb == NULL || _block->close_after_writing) {
             return;
         }
-        NSAssert(data.length <= TCP_SND_BUF, @"error in write data");
-        err_t err = tcp_write(pcb, data.bytes, data.length, 0);
+        err_t err = tcp_write(pcb, data.bytes, data.length, TCP_WRITE_FLAG_COPY);
         if (err == ERR_OK) {
             tcp_output(pcb, _block);
+        } else {
+            NSString *errDomain;
+            if (err == ERR_CONN) {
+                errDomain = @"Connection is in invalid state for data transmission.";
+            } else if (err == ERR_MEM) {
+                errDomain = @"Fail on too much data or there is not enough send buf space for data.";
+            } else {
+                errDomain = @"Unknown error.";
+            }
+            NSError *error = [NSError errorWithDomain:errDomain code:err userInfo:NULL];
+            dispatch_async(_delegateQueue, ^{
+                if (self.delegate) {
+                    [self.delegate connection:self didCheckWriteDataWithError:error];
+                }
+            });
         }
     });
 }
