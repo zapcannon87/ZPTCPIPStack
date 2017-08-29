@@ -76,7 +76,7 @@ struct zp_tcp_block {
     tcpwnd_size_t  recv_acked;
     
     u8_t close_after_writing;
-    
+    u8_t abort_before_set_delegate;
 };
 
 void tcp_input_pre(struct pbuf *p, struct netif *inp);

@@ -11,6 +11,7 @@
 
 //  Memory options
 #define MEM_LIBC_MALLOC         1
+#define MEMP_MEM_MALLOC         1
 /*  Details:
  *  https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemory/Articles/MemoryAlloc.html
  */

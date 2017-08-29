@@ -96,11 +96,15 @@ void zp_tcp_err(void *arg, err_t err)
         errorDomain = @"Unknown error.";
     }
     NSError *error = [NSError errorWithDomain:errorDomain code:err userInfo:NULL];
-    dispatch_async(conn.delegateQueue, ^{
-        if (conn.delegate) {
-            [conn.delegate connection:conn didDisconnectWithError:error];
-        }
-    });
+    if (conn.delegateQueue) {
+        dispatch_async(conn.delegateQueue, ^{
+            if (conn.delegate) {
+                [conn.delegate connection:conn didDisconnectWithError:error];
+            }
+        });
+    } else {
+        conn.block->abort_before_set_delegate = 1;
+    }
 }
 
 
@@ -135,6 +139,7 @@ void zp_tcp_err(void *arg, err_t err)
         _block->tcp_ticks = 0;
         _block->tcp_timer = 0;
         _block->close_after_writing = 0;
+        _block->abort_before_set_delegate = 0;
         
         _canReadData = FALSE;
         
@@ -270,10 +275,11 @@ void zp_tcp_err(void *arg, err_t err)
 
 // MARK: - API
 
-- (void)syncSetDelegate:(id<ZPTCPConnectionDelegate>)delegate delegateQueue:(dispatch_queue_t)queue
+- (BOOL)syncSetDelegate:(id<ZPTCPConnectionDelegate>)delegate delegateQueue:(dispatch_queue_t)queue
 {
     NSAssert(dispatch_get_specific(IsOnTimerQueueKey) != (__bridge void *)(_timerQueue),
              @"Must not be dispatched on timer queue");
+    __block BOOL pcb_is_abort;
     dispatch_sync(_timerQueue, ^{
         _delegate = delegate;
         if (queue) {
@@ -281,7 +287,9 @@ void zp_tcp_err(void *arg, err_t err)
         } else {
             _delegateQueue = dispatch_queue_create("ZPTCPConnection.delegateQueue", NULL);
         }
+        pcb_is_abort = (_block->abort_before_set_delegate == 1);
     });
+    return pcb_is_abort;
 }
 
 - (void)asyncSetDelegate:(id<ZPTCPConnectionDelegate>)delegate delegateQueue:(dispatch_queue_t)queue

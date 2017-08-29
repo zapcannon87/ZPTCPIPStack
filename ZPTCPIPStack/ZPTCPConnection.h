@@ -33,7 +33,7 @@
 @property (nonatomic, assign, readonly) UInt16 srcPort;
 @property (nonatomic, assign, readonly) UInt16 destPort;
 
-- (void)syncSetDelegate:(id<ZPTCPConnectionDelegate> _Nonnull)delegate
+- (BOOL)syncSetDelegate:(id<ZPTCPConnectionDelegate> _Nonnull)delegate
           delegateQueue:(dispatch_queue_t _Nullable)queue;
 
 - (void)asyncSetDelegate:(id<ZPTCPConnectionDelegate> _Nonnull)delegate
