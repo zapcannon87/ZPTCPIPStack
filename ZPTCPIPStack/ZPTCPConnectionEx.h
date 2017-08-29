@@ -30,6 +30,8 @@
 
 @property (nonatomic, assign) BOOL canReadData;
 
+@property (nonatomic, assign) BOOL abortBeforeSetDelegate;
+
 + (instancetype)newTCPConnectionWith:(ZPPacketTunnel *)tunnel
                            identifie:(NSString *)identifie
                               ipData:(struct ip_globals *)ipData

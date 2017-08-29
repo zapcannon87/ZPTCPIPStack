@@ -103,7 +103,7 @@ void zp_tcp_err(void *arg, err_t err)
             }
         });
     } else {
-        conn.block->abort_before_set_delegate = 1;
+        conn.abortBeforeSetDelegate = TRUE;
     }
 }
 
@@ -139,9 +139,9 @@ void zp_tcp_err(void *arg, err_t err)
         _block->tcp_ticks = 0;
         _block->tcp_timer = 0;
         _block->close_after_writing = 0;
-        _block->abort_before_set_delegate = 0;
         
         _canReadData = FALSE;
+        _abortBeforeSetDelegate = FALSE;
         
         if (_block->tcpInfo.flags & TCP_RST) {
             /* An incoming RST should be ignored. Return. */
@@ -287,7 +287,7 @@ void zp_tcp_err(void *arg, err_t err)
         } else {
             _delegateQueue = dispatch_queue_create("ZPTCPConnection.delegateQueue", NULL);
         }
-        pcb_is_abort = (_block->abort_before_set_delegate == 1);
+        pcb_is_abort = _abortBeforeSetDelegate;
     });
     return pcb_is_abort;
 }
