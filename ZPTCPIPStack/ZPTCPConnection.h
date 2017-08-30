@@ -17,7 +17,7 @@
 
  @param connection tcp stack controller
  @param length transfered data's length
- @param isEmpty True means all send data complete transfer or no data sent. False means exist send data in buffer wait for acking or retransmiting.
+ @param isEmpty True means all send data complete transfer or no data sent, False means exist send data in buffer wait for acking or retransmiting
  */
 - (void)connection:(ZPTCPConnection *_Nonnull)connection didWriteData:(UInt16)length sendBuf:(BOOL)isEmpty;
 
@@ -57,32 +57,32 @@
 @interface ZPTCPConnection : NSObject
 
 /**
- queue calls ZPTCPConnectionDelegate's method
+ Queue for delegate, it should be a serial queue.
  */
 @property (nonatomic, strong, readonly, nonnull) dispatch_queue_t delegateQueue;
 
 /**
- tcp connection source address
+ TCP connection source address.
  */
 @property (nonatomic, strong, readonly, nonnull) NSString *srcAddr;
 
 /**
- tcp connection destination address
+ TCP connection destination address.
  */
 @property (nonatomic, strong, readonly, nonnull) NSString *destAddr;
 
 /**
- tcp connection source port
+ TCP connection source port.
  */
 @property (nonatomic, assign, readonly) UInt16 srcPort;
 
 /**
- tcp connection destination port
+ TCP connection destination port.
  */
 @property (nonatomic, assign, readonly) UInt16 destPort;
 
 /**
- synchronously. Set the delegate and delegate queue
+ Synchronously. Set the delegate and delegate queue.
 
  @param delegate can not be NULL
  @param queue can be NULL
@@ -91,7 +91,7 @@
 - (BOOL)syncSetDelegate:(id<ZPTCPConnectionDelegate> _Nonnull)delegate delegateQueue:(dispatch_queue_t _Nullable)queue;
 
 /**
- asynchronously. Set the delegate and delegate queue
+ Asynchronously. Set the delegate and delegate queue.
 
  @param delegate can not be NULL
  @param queue can be NULL
@@ -99,24 +99,24 @@
 - (void)asyncSetDelegate:(id<ZPTCPConnectionDelegate> _Nonnull)delegate delegateQueue:(dispatch_queue_t _Nullable)queue;
 
 /**
- asynchronously. Writes data to the tcp_pcb, and calls the delegate when finished.
+ Asynchronously. Writes data to the tcp_pcb, and calls the delegate when finished.
 
  @param data writing data
  */
 - (void)write:(NSData *_Nonnull)data;
 
 /**
- asynchronously. This is not directly read the data in received buffer, it will set a flag up to let the tcp_pcb can read data from buffer. when the read delegate has been called, the flag will be set down.
+ Asynchronously. This is not directly read the data in received buffer, it will set a flag up to let the tcp_pcb can read data from buffer. when the read delegate has been called, the flag will be set down.
  */
 - (void)readData;
 
 /**
- asynchronously. close the connection
+ Asynchronously. Close the connection.
  */
 - (void)close;
 
 /**
- asynchronously. close the connection after all pending writes have completed.
+ Asynchronously. Close the connection after all pending writes have completed.
  */
 - (void)closeAfterWriting;
 

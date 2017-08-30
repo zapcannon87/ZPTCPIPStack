@@ -18,27 +18,35 @@
 #include "lwip/ip4_frag.h"
 #include "lwip/ip6_frag.h"
 
-#if LWIP_IPV4 && LWIP_IPV6
-/** @ingroup socket */
+#if LWIP_IPV4 && LWIP_IPV6 /* LWIP_IPV4 && LWIP_IPV6 */
+
 #define inet_ntop(af,src,dst,size) \
 (((af) == AF_INET6) ? ip6addr_ntoa_r((const ip6_addr_t*)(src),(dst),(size)) \
 : (((af) == AF_INET) ? ip4addr_ntoa_r((const ip4_addr_t*)(src),(dst),(size)) : NULL))
-/** @ingroup socket */
 #define inet_pton(af,src,dst) \
 (((af) == AF_INET6) ? ip6addr_aton((src),(ip6_addr_t*)(dst)) \
 : (((af) == AF_INET) ? ip4addr_aton((src),(ip4_addr_t*)(dst)) : 0))
-#elif LWIP_IPV4 /* LWIP_IPV4 && LWIP_IPV6 */
+
+#elif LWIP_IPV4 /* LWIP_IPV4 */
+
 #define inet_ntop(af,src,dst,size) \
 (((af) == AF_INET) ? ip4addr_ntoa_r((const ip4_addr_t*)(src),(dst),(size)) : NULL)
 #define inet_pton(af,src,dst) \
 (((af) == AF_INET) ? ip4addr_aton((src),(ip4_addr_t*)(dst)) : 0)
-#else /* LWIP_IPV4 && LWIP_IPV6 */
+
+#else /* LWIP_IPV6 */
+
 #define inet_ntop(af,src,dst,size) \
 (((af) == AF_INET6) ? ip6addr_ntoa_r((const ip6_addr_t*)(src),(dst),(size)) : NULL)
 #define inet_pton(af,src,dst) \
 (((af) == AF_INET6) ? ip6addr_aton((src),(ip6_addr_t*)(dst)) : 0)
+
 #endif /* LWIP_IPV4 && LWIP_IPV6 */
 
+
+/**
+ struct to store tcp header info
+ */
 struct tcp_info {
     /* These variables are global to all functions involved in the input
      processing of TCP segments. They are set by the tcp_input_pre()
@@ -53,6 +61,9 @@ struct tcp_info {
     u8_t  flags;
 };
 
+/**
+ struct to store all the tcp stack global info to all functions involved in the lwIP's tcp stack
+ */
 struct zp_tcp_block {
     
     struct tcp_pcb *pcb;
@@ -75,10 +86,17 @@ struct zp_tcp_block {
     u8_t           recv_flags;
     tcpwnd_size_t  recv_acked;
     
+    /* flag to control tcp close after all pending writes have completed */
     u8_t close_after_writing;
     
 };
 
+/**
+ tcp input preprocess, check and get the info in tcp packet header.
+
+ @param p tcp data pbuf
+ @param inp input network interface
+ */
 void tcp_input_pre(struct pbuf *p, struct netif *inp);
 
 #endif /* lwIP_h */
