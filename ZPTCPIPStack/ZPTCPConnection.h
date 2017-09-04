@@ -30,13 +30,6 @@
 - (void)connection:(ZPTCPConnection *_Nonnull)connection didReadData:(NSData *_Nonnull)data;
 
 /**
- Conditionally called if the read stream closes, but the write stream may still be writeable.
-
- @param connection tcp stack controller
- */
-- (void)connectionDidCloseReadStream:(ZPTCPConnection *_Nonnull)connection;
-
-/**
  Called when a connection close with error.
 
  @param connection tcp stack controller
@@ -51,6 +44,14 @@
  @param err error in writing data
  */
 - (void)connection:(ZPTCPConnection *_Nonnull)connection didCheckWriteDataWithError:(NSError *_Nonnull)err;
+
+/**
+ Conditionally called if the read stream closes, but the write stream may still be writeable.
+ 
+ @param connection tcp stack controller
+ */
+@optional
+- (void)connectionDidCloseReadStream:(ZPTCPConnection *_Nonnull)connection;
 
 @end
 
@@ -86,7 +87,7 @@
 
  @param delegate can not be NULL
  @param queue can be NULL
- @return a flag to indicate whether the tcp_pcb has been aborted. True means tcp has aborted, False means tcp not aborted.
+ @return a flag to indicate whether the tcp_pcb has been aborted. False means tcp has aborted, True means tcp not aborted.
  */
 - (BOOL)syncSetDelegate:(id<ZPTCPConnectionDelegate> _Nonnull)delegate delegateQueue:(dispatch_queue_t _Nullable)queue;
 

@@ -18,6 +18,7 @@ err_t zp_tcp_sent(void *arg, struct tcp_pcb *tpcb, u16_t len)
     ZPTCPConnection *conn = (__bridge ZPTCPConnection *)(arg);
     LWIP_ASSERT("Must be dispatched on timer queue",
                 dispatch_get_specific(IsOnTimerQueueKey) == (__bridge void *)(conn.timerQueue));
+    LWIP_ASSERT("Must did set delegateQueue before sent data", conn.delegateQueue);
     dispatch_async(conn.delegateQueue, ^{
         if (conn.delegate) {
             [conn.delegate connection:conn didWriteData:len sendBuf:(tpcb->snd_buf == TCP_SND_BUF)];
@@ -37,11 +38,15 @@ err_t zp_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
     }
     if (p == NULL) {
         /* got FIN */
-        dispatch_async(conn.delegateQueue, ^{
-            if (conn.delegate) {
-                [conn.delegate connectionDidCloseReadStream:conn];
-            }
-        });
+        if (conn.delegateQueue) {
+            dispatch_async(conn.delegateQueue, ^{
+                if (conn.delegate
+                    && [conn.delegate respondsToSelector:@selector(connectionDidCloseReadStream:)])
+                {
+                    [conn.delegate connectionDidCloseReadStream:conn];
+                }
+            });
+        }
         return ERR_OK;
     }
     if (conn.canReadData) {
@@ -50,6 +55,7 @@ err_t zp_tcp_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
         LWIP_ASSERT("error in pbuf_copy_partial",
                     pbuf_copy_partial(p, buf, p->tot_len, 0) != 0);
         NSData *data = [NSData dataWithBytesNoCopy:buf length:p->tot_len];
+        LWIP_ASSERT("Must did set delegateQueue before start read data", conn.delegateQueue);
         dispatch_async(conn.delegateQueue, ^{
             if (conn.delegate) {
                 [conn.delegate connection:conn didReadData:data];
@@ -276,7 +282,7 @@ void zp_tcp_err(void *arg, err_t err)
 {
     NSAssert(dispatch_get_specific(IsOnTimerQueueKey) != (__bridge void *)(_timerQueue),
              @"Must not be dispatched on timer queue");
-    __block BOOL pcb_is_abort;
+    __block BOOL pcb_is_valid;
     dispatch_sync(_timerQueue, ^{
         _delegate = delegate;
         if (queue) {
@@ -284,9 +290,9 @@ void zp_tcp_err(void *arg, err_t err)
         } else {
             _delegateQueue = dispatch_queue_create("ZPTCPConnection.delegateQueue", NULL);
         }
-        pcb_is_abort = (_block->pcb == NULL);
+        pcb_is_valid = (_block->pcb);
     });
-    return pcb_is_abort;
+    return pcb_is_valid;
 }
 
 - (void)asyncSetDelegate:(id<ZPTCPConnectionDelegate>)delegate delegateQueue:(dispatch_queue_t)queue
