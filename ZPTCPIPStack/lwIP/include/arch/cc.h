@@ -4,15 +4,15 @@
 #if defined(__aarch64__)
 #include <arm/endian.h>
 #else /* __aarch64__ */
-#ifndef LITTLE_ENDIAN
-#define LITTLE_ENDIAN 1234
-#endif /* LITTLE_ENDIAN */
-#ifndef BIG_ENDIAN
-#define BIG_ENDIAN 4321
-#endif /* BIG_ENDIAN */
-#ifndef BYTE_ORDER
-#define BYTE_ORDER LITTLE_ENDIAN
-#endif /* BYTE_ORDER */
+//#ifndef LITTLE_ENDIAN
+//#define LITTLE_ENDIAN 1234
+//#endif /* LITTLE_ENDIAN */
+//#ifndef BIG_ENDIAN
+//#define BIG_ENDIAN 4321
+//#endif /* BIG_ENDIAN */
+//#ifndef BYTE_ORDER
+//#define BYTE_ORDER LITTLE_ENDIAN
+//#endif /* BYTE_ORDER */
 #endif /* __aarch64__ */
 
 /* Define (sn)printf formatters for these lwIP types */

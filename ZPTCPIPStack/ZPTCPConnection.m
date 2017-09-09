@@ -192,7 +192,7 @@ void zp_tcp_err(void *arg, err_t err)
             return NULL;
             
         } else if (_block->tcpInfo.flags & TCP_SYN) {
-            LWIP_DEBUGF(TCP_DEBUG, ("TCP connection request %"U16_F" -> %"U16_F".\n", tcphdr->src, tcphdr->dest));
+            LWIP_DEBUGF(TCP_DEBUG, ("TCP connection request %"U16_F" -> %"U16_F".\n", _block->tcpInfo.tcphdr->src, _block->tcpInfo.tcphdr->dest));
             struct tcp_pcb *npcb = tcp_alloc(TCP_PRIO_NORMAL);
             /* If a new PCB could not be created (probably due to lack of memory),
              we don't do anything, but rely on the sender will retransmit the
@@ -330,7 +330,11 @@ void zp_tcp_err(void *arg, err_t err)
         } else {
             _delegateQueue = dispatch_queue_create("ZPTCPConnection.delegateQueue", NULL);
         }
-        pcb_is_valid = (_block->pcb);
+        if (_block->pcb) {
+            pcb_is_valid = TRUE;
+        } else {
+            pcb_is_valid = FALSE;
+        }
     });
     return pcb_is_valid;
 }
