@@ -357,6 +357,9 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
     } else if (ip_v == 4) {
         return ip4_input(p, &_netif);
     } else {
+#if LWIP_DEBUG
+        NSLog(@"ZPPacketTunnel IP Version: %hhu", ip_v);
+#endif
         return ERR_VAL;
     }
 }
