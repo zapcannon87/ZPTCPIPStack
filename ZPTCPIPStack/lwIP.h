@@ -18,6 +18,8 @@
 #include "lwip/ip4_frag.h"
 #include "lwip/ip6_frag.h"
 
+#define LOG_FUNC_NAME 1
+
 #if LWIP_IPV4 && LWIP_IPV6 /* LWIP_IPV4 && LWIP_IPV6 */
 
 #define inet_ntop(af,src,dst,size) \
@@ -98,7 +100,5 @@ struct zp_tcp_block {
  @param inp input network interface
  */
 void tcp_input_pre(struct pbuf *p, struct netif *inp);
-
-#define LOG_FUNC_NAME 1
 
 #endif /* lwIP_h */

@@ -11,6 +11,16 @@
 #import "ZPTCPConnection.h"
 #import "ZPTCPConnectionEx.h"
 
+void zp_debug_log(const char *message, ...)
+{
+#ifdef LWIP_DEBUG
+    va_list args;
+    va_start(args, message);
+    NSLog(@"%@",[[NSString alloc] initWithFormat:[NSString stringWithUTF8String:message] arguments:args]);
+    va_end(args);
+#endif
+}
+
 err_t netif_output(struct pbuf *p, BOOL is_ipv4)
 {
 #if LOG_FUNC_NAME

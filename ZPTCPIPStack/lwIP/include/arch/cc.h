@@ -21,7 +21,7 @@
 #define S16_F "hd"
 #define X16_F "hx"
 #define U32_F "u"
-#define S32_F "ld"
+#define S32_F "d"
 #define X32_F "x"
 
 /* If only we could use C99 and get %zu */
@@ -44,7 +44,7 @@
 #include <stdlib.h>
 
 /* Plaform specific diagnostic output */
-#define LWIP_PLATFORM_DIAG(message)	do {printf message;} while(0)
+#define LWIP_PLATFORM_DIAG(message)	do {zp_debug_log message;} while(0)
 
 #ifdef LWIP_UNIX_EMPTY_ASSERT
 #define LWIP_PLATFORM_ASSERT(message)
@@ -54,5 +54,7 @@ message, __LINE__, __FILE__); fflush(NULL); abort();} while(0)
 #endif
 
 #define LWIP_RAND() ((u32_t)rand())
+
+void zp_debug_log(const char *message, ...);
 
 #endif /* LWIP_ARCH_CC_H */
