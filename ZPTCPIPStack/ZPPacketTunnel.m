@@ -351,10 +351,13 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
     NSAssert(p != NULL, @"error in pbuf_alloc");
     NSAssert(pbuf_take(p, data.bytes, data.length) == ERR_OK, @"error in pbuf_take");
     
-    if (IP_HDR_GET_VERSION(p->payload) == 6) {
+    u8_t ip_v = IP_HDR_GET_VERSION(p->payload);
+    if (ip_v == 6) {
         return ip6_input(p, &_netif);
-    } else {
+    } else if (ip_v == 4) {
         return ip4_input(p, &_netif);
+    } else {
+        return ERR_VAL;
     }
 }
 
