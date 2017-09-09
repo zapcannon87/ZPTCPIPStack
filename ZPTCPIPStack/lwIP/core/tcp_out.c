@@ -1545,7 +1545,7 @@ tcp_keepalive(struct tcp_pcb *pcb
   LWIP_DEBUGF(TCP_DEBUG, ("\n"));
 
   LWIP_DEBUGF(TCP_DEBUG, ("tcp_keepalive: tcp_ticks %"U32_F"   pcb->tmr %"U32_F" pcb->keep_cnt_sent %"U16_F"\n",
-                          tcp_ticks, pcb->tmr, (u16_t)pcb->keep_cnt_sent));
+                          block->tcp_ticks, pcb->tmr, (u16_t)pcb->keep_cnt_sent));
 
   p = tcp_output_alloc_header(pcb, 0, 0, lwip_htonl(pcb->snd_nxt - 1));
   if (p == NULL) {
@@ -1608,7 +1608,7 @@ tcp_zero_window_probe(struct tcp_pcb *pcb
     LWIP_DEBUGF(TCP_DEBUG,
                 ("tcp_zero_window_probe: tcp_ticks %"U32_F
                  "   pcb->tmr %"U32_F" pcb->keep_cnt_sent %"U16_F"\n",
-                 tcp_ticks, pcb->tmr, (u16_t)pcb->keep_cnt_sent));
+                 block->tcp_ticks, pcb->tmr, (u16_t)pcb->keep_cnt_sent));
     
     seg = pcb->unacked;
     

@@ -20,9 +20,9 @@
 #define U16_F "hu"
 #define S16_F "hd"
 #define X16_F "hx"
-#define U32_F "lu"
+#define U32_F "u"
 #define S32_F "ld"
-#define X32_F "lx"
+#define X32_F "x"
 
 /* If only we could use C99 and get %zu */
 #if defined(__aarch64__)
