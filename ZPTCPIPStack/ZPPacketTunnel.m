@@ -312,6 +312,7 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 
 - (void)tcpConnectionEstablished:(ZPTCPConnection *)conn
 {
+    NSAssert(_delegateQueue, @"Not set delegate queue");
     dispatch_async(_delegateQueue, ^{
         if (_delegate) {
             [_delegate tunnel:self didEstablishNewTCPConnection:conn];
