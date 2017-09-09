@@ -15,7 +15,7 @@
 /*
  https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemory/Articles/MemoryAlloc.html
  */
-#define MEM_ALIGNMENT           16
+#define MEM_ALIGNMENT           16 /* or 8 ? uncertainly... */
 
 //  IP options
 #define IP_FRAG                 0

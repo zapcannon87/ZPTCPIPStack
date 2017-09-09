@@ -32,6 +32,9 @@ typedef void (^OutputBlock)(NSArray<NSData *> *_Nullable packets, NSArray<NSNumb
  */
 @property (nonatomic, strong, readonly, nonnull) dispatch_queue_t delegateQueue;
 
+- (instancetype _Nonnull)init NS_UNAVAILABLE;
++ (instancetype _Nonnull)new NS_UNAVAILABLE;
+
 /**
  Singleton
 
