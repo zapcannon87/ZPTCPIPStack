@@ -99,4 +99,6 @@ struct zp_tcp_block {
  */
 void tcp_input_pre(struct pbuf *p, struct netif *inp);
 
+#define LOG_FUNC_NAME 1
+
 #endif /* lwIP_h */

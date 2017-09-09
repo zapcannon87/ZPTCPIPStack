@@ -13,6 +13,10 @@
 
 err_t netif_output(struct pbuf *p, BOOL is_ipv4)
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %s", __func__);
+#endif
+    
     void *buf = malloc(sizeof(char) * p->tot_len);
     LWIP_ASSERT("error in pbuf_copy_partial", pbuf_copy_partial(p, buf, p->tot_len, 0) != 0);
     
@@ -29,17 +33,29 @@ err_t netif_output(struct pbuf *p, BOOL is_ipv4)
 
 err_t netif_output_ip4(struct netif *netif, struct pbuf *p, const ip4_addr_t *ipaddr)
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %s", __func__);
+#endif
+    
     return netif_output(p, TRUE);
 }
 
 err_t netif_output_ip6(struct netif *netif, struct pbuf *p, const ip6_addr_t *ipaddr)
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %s", __func__);
+#endif
+    
     return netif_output(p, FALSE);
 }
 
 void
 tcp_input_pre(struct pbuf *p, struct netif *inp)
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %s", __func__);
+#endif
+    
     u8_t hdrlen_bytes;
     
     LWIP_UNUSED_ARG(inp);
@@ -228,6 +244,10 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 
 + (instancetype)shared
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     static dispatch_once_t once;
     static id shared;
     dispatch_once(&once, ^{
@@ -238,6 +258,10 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 
 - (instancetype)init
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     self = [super init];
     if (self) {
         _dic = [[NSMutableDictionary alloc] init];
@@ -249,6 +273,10 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 - (void)setDelegate:(id<ZPPacketTunnelDelegate> _Nonnull)delegate
       delegateQueue:(dispatch_queue_t _Nullable)queue;
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     _delegate = delegate;
     if (queue) {
         _delegateQueue = queue;
@@ -259,12 +287,20 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 
 -(void)mtu:(UInt16)mtu output:(OutputBlock)output
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     _netif.mtu = mtu;
     _output = output;
 }
 
 -(void)ipv4SettingWithAddress:(NSString *)addr netmask:(NSString *)netmask
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     struct netif *netif = &_netif;
     
     /* set address */
@@ -294,6 +330,10 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 
 - (err_t)ipPacketInput:(NSData *)data
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     NSAssert(data.length <= _netif.mtu, @"error in data length or mtu value");
     
     /* copy data bytes to pbuf */
@@ -312,6 +352,10 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 
 - (void)tcpConnectionEstablished:(ZPTCPConnection *)conn
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     dispatch_async(_delegateQueue, ^{
         if (_delegate) {
             [_delegate tunnel:self didEstablishNewTCPConnection:conn];
@@ -321,6 +365,10 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 
 - (ZPTCPConnection *)connectionForKey:(NSString *)key
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     __block ZPTCPConnection *conn = NULL;
     dispatch_sync(_dicQueue, ^{
         conn = [_dic objectForKey:key];
@@ -330,6 +378,10 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 
 - (void)setConnection:(ZPTCPConnection *)conn forKey:(NSString *)key
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     dispatch_sync(_dicQueue, ^{
         [_dic setObject:conn forKey:key];
     });
@@ -337,6 +389,10 @@ tcp_input_pre(struct pbuf *p, struct netif *inp)
 
 - (void)removeConnectionForKey:(NSString *)key
 {
+#if LOG_FUNC_NAME
+    NSLog(@"ZPPacketTunnel %@", NSStringFromSelector(_cmd));
+#endif
+    
     dispatch_async(_dicQueue, ^{
         [_dic removeObjectForKey:key];
     });
