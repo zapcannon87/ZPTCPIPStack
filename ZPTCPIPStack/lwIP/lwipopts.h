@@ -64,7 +64,7 @@
 #define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS
 
 //  Debug
-#define LWIP_DEBUG              LWIP_DBG_ON
-#define IP_DEBUG                LWIP_DBG_ON
+//#define LWIP_DEBUG              LWIP_DBG_ON
+//#define IP_DEBUG                LWIP_DBG_ON
 
 #endif /* LWIP_CUSTOM_LWIPOPTS_H */
