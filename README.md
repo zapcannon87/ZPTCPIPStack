@@ -12,6 +12,10 @@ ZPTCPIPStack is [Carthage](https://github.com/Carthage/Carthage) compatible. To 
 github "zapcannon87/ZPTCPIPStack" "master"
 ```
 
+#### Warning
+
+there is a problem with directly integrating ZPTCPIPStack into project using Carthage. I'm fixing it. alternative you can refer the files into a project's inner framework.
+
 ## Demo
 
 [Sniffer](https://github.com/zapcannon87/Sniffer)
