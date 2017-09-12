@@ -284,13 +284,13 @@ void zp_tcp_err(void *arg, err_t err)
              @"Must not be dispatched on timer queue");
     __block BOOL pcb_is_valid;
     dispatch_sync(_timerQueue, ^{
-        _delegate = delegate;
-        if (queue) {
-            _delegateQueue = queue;
-        } else {
-            _delegateQueue = dispatch_queue_create("ZPTCPConnection.delegateQueue", NULL);
-        }
         if (_block->pcb) {
+            _delegate = delegate;
+            if (queue) {
+                _delegateQueue = queue;
+            } else {
+                _delegateQueue = dispatch_queue_create("ZPTCPConnection.delegateQueue", NULL);
+            }
             pcb_is_valid = TRUE;
         } else {
             pcb_is_valid = FALSE;
